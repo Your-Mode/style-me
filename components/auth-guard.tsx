@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Shield, Phone, AlertCircle, CheckCircle, Heart } from "lucide-react"
 import Link from "next/link"
+import { valueExists } from "@/firebase";
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -27,24 +28,13 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     checkAuthentication()
   }, [])
 
-  const checkAuthentication = () => {
+  const checkAuthentication = async () => {
     try {
-      // 사용자 정보 확인
-      const userInfo = localStorage.getItem("userInfo")
-      const authToken = localStorage.getItem("authToken")
+      const result = await valueExists("apply", "phone", phoneNumber.replace("-", ""))
+      console.log(result)
 
-      if (userInfo && authToken) {
-        const user = JSON.parse(userInfo)
-        const token = JSON.parse(authToken)
-
-        // 토큰이 유효한지 확인 (24시간 유효)
-        const tokenTime = new Date(token.timestamp)
-        const now = new Date()
-        const hoursDiff = (now.getTime() - tokenTime.getTime()) / (1000 * 60 * 60)
-
-        if (hoursDiff < 24 && token.phone === user.phone) {
-          setIsAuthenticated(true)
-        }
+      if (result) {
+        setIsAuthenticated(true)
       }
     } catch (error) {
       console.error("인증 확인 중 오류:", error)
@@ -72,8 +62,9 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     try {
       // 저장된 사용자 정보와 비교
       const userInfo = localStorage.getItem("userInfo")
+      const result = await valueExists("apply", "phone", phoneNumber.replace("-", ""))
 
-      if (!userInfo) {
+      if (!userInfo || !result) {
         setError("결제 정보를 찾을 수 없습니다. 먼저 결제를 완료해주세요.")
         setIsVerifying(false)
         return
@@ -81,12 +72,11 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
 
       const user = JSON.parse(userInfo)
       const normalizedInput = phoneNumber.replace(/[^0-9]/g, "")
-      const normalizedStored = user.phone.replace(/[^0-9]/g, "")
 
       // 시뮬레이션 딜레이
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
-      if (normalizedInput === normalizedStored) {
+      if (normalizedInput) {
         // 인증 토큰 생성
         const authToken = {
           phone: user.phone,
@@ -103,7 +93,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
       } else {
         setError("결제 시 입력한 전화번호와 일치하지 않습니다.")
       }
-    } catch (error) {
+    } catch {
       setError("인증 중 오류가 발생했습니다. 다시 시도해주세요.")
     } finally {
       setIsVerifying(false)

@@ -14,10 +14,13 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BodyDiagnosisFormData } from "@/types/body";
 import { applyBodyDiagnosis } from "@/firebase";
+import Image from "next/image";
+import { useApplyUserInfoStore } from "@/hooks/useApplyUserInfoStore";
 
 export default function ApplyPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { setGender, setHeight, setWeight } = useApplyUserInfoStore();
   const [formData, setFormData] = useState<BodyDiagnosisFormData>({
     name: "",
     phone: "",
@@ -68,14 +71,17 @@ export default function ApplyPage() {
   const handleSubmit = async () => {
     if (!isFormValid()) return;
 
+    setWeight(parseInt(formData.weight));
+    setHeight(parseInt(formData.height));
+    setGender(formData.gender);
+
     setIsSubmitting(true);
-    await applyBodyDiagnosis(formData)
+    await applyBodyDiagnosis(formData);
     // 결제 시뮬레이션
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 로컬 스토리지에 사용자 정보 저장
-    localStorage.setItem("userInfo", JSON.stringify({ ...formData, images: uploadedImages.length }));
-
+    localStorage.setItem("userInfo", JSON.stringify(formData));
     router.push("/complete");
   };
 
@@ -276,7 +282,7 @@ export default function ApplyPage() {
                     <div className="grid grid-cols-3 gap-4">
                       {uploadedImages.map((file, index) => (
                         <div key={index} className="relative">
-                          <img
+                          <Image
                             src={URL.createObjectURL(file) || "/placeholder.svg"}
                             alt={`업로드된 이미지 ${index + 1}`}
                             className="w-full h-32 object-cover rounded-lg"

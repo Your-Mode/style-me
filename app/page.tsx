@@ -332,7 +332,7 @@ export default function HomePage() {
                       <Star key={i} className="h-5 w-5 text-rose-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-6 leading-relaxed font-medium">"{review.review}"</p>
+                  <p className="text-gray-700 mb-6 leading-relaxed font-medium">`{review.review}`</p>
                   <div className="text-right">
                     <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 text-sm font-bold rounded-full border border-rose-200">
                       <span className="mr-2">{review.emoji}</span>

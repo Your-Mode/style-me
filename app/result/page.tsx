@@ -1,60 +1,48 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sparkles, Shirt, Star, Share2, Heart, X, Printer } from "lucide-react"
-import Link from "next/link"
-import { useState, useEffect, useRef } from "react"
-import { calculateBodyType, type DiagnosisResult } from "@/lib/survey-data"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sparkles, Shirt, Star, Share2, Heart, X, Printer } from "lucide-react";
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { useBodyResultStore } from "@/hooks/useBodyResultStore";
 
 export default function ResultPage() {
-  const [result, setResult] = useState<DiagnosisResult | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showShareModal, setShowShareModal] = useState(false)
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
-  const resultRef = useRef<HTMLDivElement>(null)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const { bodyResult: result } = useBodyResultStore();
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     // 로딩 애니메이션
     const loadingTimer = setTimeout(() => {
       // 설문 답변 안전 파싱
-      let answers: string[] = []
+      let answers: string[] = [];
       try {
-        const raw = localStorage.getItem("surveyAnswers")
-        answers = raw ? JSON.parse(raw) : []
-        if (!Array.isArray(answers)) answers = []
+        const raw = localStorage.getItem("surveyAnswers");
+        answers = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(answers)) answers = [];
       } catch {
-        answers = []
+        answers = [];
       }
+      setIsLoading(false);
+    }, 3000);
 
-      // Mock 데이터로 임시 결과 제공 (실제 답변이 없을 때)
-      if (answers.length === 0) {
-        // 임시로 내추럴 타입 결과를 보여주기 위한 mock answers
-        const mockAnswers = ["C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
-        const diagnosisResult = calculateBodyType(mockAnswers)
-        setResult(diagnosisResult)
-      } else {
-        const diagnosisResult = calculateBodyType(answers)
-        setResult(diagnosisResult)
-      }
-      setIsLoading(false)
-    }, 3000)
-
-    return () => clearTimeout(loadingTimer)
-  }, [])
+    return () => clearTimeout(loadingTimer);
+  }, []);
 
   const generatePDF = async () => {
-    if (!result) return
+    if (!result) return;
 
-    setIsGeneratingPDF(true)
+    setIsGeneratingPDF(true);
 
     try {
       // 고급 인쇄 스타일 추가
-      const printStyle = document.createElement("style")
+      const printStyle = document.createElement("style");
       printStyle.textContent = `
         @media print {
           * {
@@ -192,117 +180,117 @@ export default function ResultPage() {
             page-break-inside: avoid;
           }
         }
-      `
-      document.head.appendChild(printStyle)
+      `;
+      document.head.appendChild(printStyle);
 
       // 인쇄용 클래스 추가
       if (resultRef.current) {
-        resultRef.current.classList.add("print-content")
+        resultRef.current.classList.add("print-content");
 
         // 모든 그라데이션 요소에 인쇄용 클래스 추가
-        const gradientElements = resultRef.current.querySelectorAll(".bg-gradient-to-r, .bg-gradient-to-br")
+        const gradientElements = resultRef.current.querySelectorAll(".bg-gradient-to-r, .bg-gradient-to-br");
         gradientElements.forEach((el) => {
           if (el.textContent?.includes("골격진단") || el.classList.contains("from-pink-500")) {
-            el.classList.add("print-gradient-pink")
+            el.classList.add("print-gradient-pink");
           } else {
-            el.classList.add("print-gradient-purple")
+            el.classList.add("print-gradient-purple");
           }
-        })
+        });
 
         // 텍스트 그라데이션 처리
-        const textGradients = resultRef.current.querySelectorAll(".bg-clip-text")
+        const textGradients = resultRef.current.querySelectorAll(".bg-clip-text");
         textGradients.forEach((el) => {
-          el.classList.add("print-gradient-text")
-        })
+          el.classList.add("print-gradient-text");
+        });
 
         // 카드 요소들에 인쇄용 클래스 추가
-        const cards = resultRef.current.querySelectorAll(".shadow-xl, .shadow-lg")
+        const cards = resultRef.current.querySelectorAll(".shadow-xl, .shadow-lg");
         cards.forEach((el) => {
-          el.classList.add("print-card")
-        })
+          el.classList.add("print-card");
+        });
 
-        const cardHeaders = resultRef.current.querySelectorAll("h1, h2, .text-2xl")
+        const cardHeaders = resultRef.current.querySelectorAll("h1, h2, .text-2xl");
         cardHeaders.forEach((el) => {
           if (el.classList.contains("text-4xl") || el.classList.contains("text-5xl")) {
-            el.classList.add("print-title")
+            el.classList.add("print-title");
           } else {
-            el.classList.add("print-subtitle")
+            el.classList.add("print-subtitle");
           }
-        })
+        });
 
-        const cardContents = resultRef.current.querySelectorAll("p, .prose")
+        const cardContents = resultRef.current.querySelectorAll("p, .prose");
         cardContents.forEach((el) => {
-          el.classList.add("print-text")
-        })
+          el.classList.add("print-text");
+        });
 
         // 아이콘 색상 클래스 추가
-        const icons = resultRef.current.querySelectorAll("svg")
+        const icons = resultRef.current.querySelectorAll("svg");
         icons.forEach((icon) => {
-          const parent = icon.closest(".flex")
+          const parent = icon.closest(".flex");
           if (parent?.textContent?.includes("상세 체형") || parent?.textContent?.includes("골격진단")) {
-            icon.classList.add("print-icon-pink")
+            icon.classList.add("print-icon-pink");
           } else if (parent?.textContent?.includes("보완")) {
-            icon.classList.add("print-icon-purple")
+            icon.classList.add("print-icon-purple");
           } else if (parent?.textContent?.includes("추천")) {
-            icon.classList.add("print-icon-green")
+            icon.classList.add("print-icon-green");
           } else if (parent?.textContent?.includes("피해")) {
-            icon.classList.add("print-icon-red")
+            icon.classList.add("print-icon-red");
           } else if (parent?.textContent?.includes("스타일링")) {
-            icon.classList.add("print-icon-yellow")
+            icon.classList.add("print-icon-yellow");
           } else if (parent?.textContent?.includes("매력")) {
-            icon.classList.add("print-icon-rose")
+            icon.classList.add("print-icon-rose");
           }
-        })
+        });
       }
 
       // 사용자에게 안내 메시지 표시
-      const userAgent = navigator.userAgent.toLowerCase()
-      let message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요."
+      const userAgent = navigator.userAgent.toLowerCase();
+      let message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
 
       if (userAgent.includes("chrome")) {
-        message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요."
+        message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
       } else if (userAgent.includes("safari")) {
-        message = "인쇄 대화상자에서 'PDF' 버튼을 클릭해주세요."
+        message = "인쇄 대화상자에서 'PDF' 버튼을 클릭해주세요.";
       } else if (userAgent.includes("firefox")) {
-        message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요."
+        message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
       }
 
-      alert(message)
+      alert(message);
 
       // 인쇄 대화상자 열기
-      window.print()
+      window.print();
 
       // 정리 (인쇄 후)
       setTimeout(() => {
-        document.head.removeChild(printStyle)
+        document.head.removeChild(printStyle);
         if (resultRef.current) {
-          resultRef.current.classList.remove("print-content")
+          resultRef.current.classList.remove("print-content");
 
           // 추가된 클래스들 안전하게 제거
-          const elementsToClean = resultRef.current.querySelectorAll("[class*='print-']")
+          const elementsToClean = resultRef.current.querySelectorAll("[class*='print-']");
           elementsToClean.forEach((el) => {
             try {
               // className이 문자열인지 확인하고 안전하게 처리
               if (el.className && typeof el.className === "string") {
-                el.className = el.className.replace(/print-[a-z-]+/g, "").trim()
+                el.className = el.className.replace(/print-[a-z-]+/g, "").trim();
               } else if (el.classList) {
                 // classList를 사용하여 print- 클래스들 제거
-                const classesToRemove = Array.from(el.classList).filter((cls) => cls.startsWith("print-"))
-                classesToRemove.forEach((cls) => el.classList.remove(cls))
+                const classesToRemove = Array.from(el.classList).filter((cls) => cls.startsWith("print-"));
+                classesToRemove.forEach((cls) => el.classList.remove(cls));
               }
-            } catch (error) {
-              console.warn("클래스 정리 중 오류:", error)
+            } catch ( error ) {
+              console.warn("클래스 정리 중 오류:", error);
             }
-          })
+          });
         }
-      }, 2000)
-    } catch (error) {
-      console.error("PDF 생성 중 오류:", error)
-      alert("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.")
+      }, 2000);
+    } catch ( error ) {
+      console.error("PDF 생성 중 오류:", error);
+      alert("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
-      setIsGeneratingPDF(false)
+      setIsGeneratingPDF(false);
     }
-  }
+  };
 
   const shareResult = async () => {
     if (navigator.share) {
@@ -311,27 +299,29 @@ export default function ResultPage() {
           title: `나의 골격진단 결과: ${result?.body_type}`,
           text: `골격진단 결과가 나왔어요! 저는 ${result?.body_type}이에요. 🎉`,
           url: window.location.href,
-        })
-      } catch (error) {
-        console.log("공유 취소됨")
+        });
+      } catch {
+        console.log("공유 취소됨");
       }
     } else {
       // 클립보드에 복사
       try {
-        await navigator.clipboard.writeText(window.location.href)
-        alert("링크가 클립보드에 복사되었습니다!")
-      } catch (error) {
-        alert("링크 복사에 실패했습니다.")
+        await navigator.clipboard.writeText(window.location.href);
+        alert("링크가 클립보드에 복사되었습니다!");
+      } catch {
+        alert("링크 복사에 실패했습니다.");
       }
     }
-  }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
+      <div
+        className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
-            <div className="w-32 h-32 border-8 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto mb-8"></div>
+            <div
+              className="w-32 h-32 border-8 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto mb-8"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <Sparkles className="h-8 w-8 text-pink-500 animate-pulse" />
             </div>
@@ -345,12 +335,13 @@ export default function ResultPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!result) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
+      <div
+        className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
         <Card className="max-w-md mx-4">
           <CardContent className="p-8 text-center">
             <h2 className="text-xl font-bold text-gray-800 mb-4">결과를 불러올 수 없습니다</h2>
@@ -361,21 +352,21 @@ export default function ResultPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   const getTypeEmoji = (type: string) => {
     switch (type) {
       case "natural":
-        return "🌿"
+        return "🌿";
       case "wave":
-        return "🌸"
+        return "🌸";
       case "straight":
-        return "⭐"
+        return "⭐";
       default:
-        return "✨"
+        return "✨";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
@@ -383,11 +374,13 @@ export default function ResultPage() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+            <div
+              className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
               <Heart className="h-5 w-5 text-white" />
             </div>
             <div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+              <span
+                className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
                 Style Me
               </span>
               <p className="text-xs text-gray-500 font-medium">Personal Styling</p>
@@ -446,10 +439,12 @@ export default function ResultPage() {
           <div ref={resultRef} className="bg-white">
             {/* Header */}
             <div className="text-center mb-12 pt-8 print-header">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 print-header-circle">
-                <span className="text-4xl">{getTypeEmoji(result.type)}</span>
+              <div
+                className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 print-header-circle">
+                <span className="text-4xl">{getTypeEmoji(result.body_type)}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              <h1
+                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                 골격진단 결과
               </h1>
               <p className="text-xl text-gray-600">당신의 골격 타입이 분석되었습니다</p>
@@ -605,15 +600,15 @@ export default function ResultPage() {
                   <div className="grid md:grid-cols-3 gap-4 text-sm">
                     <div className="bg-white p-4 rounded-lg border">
                       <p className="font-bold text-blue-600 mb-2">Chrome</p>
-                      <p>대상 → "PDF로 저장" 선택</p>
+                      <p>대상 → PDF로 저장 선택</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg border">
                       <p className="font-bold text-orange-600 mb-2">Safari</p>
-                      <p>하단 "PDF" 버튼 클릭</p>
+                      <p>하단 PDF 버튼 클릭</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg border">
                       <p className="font-bold text-purple-600 mb-2">Firefox</p>
-                      <p>대상 → "PDF로 저장" 선택</p>
+                      <p>대상 → PDF로 저장 선택</p>
                     </div>
                   </div>
                 </div>
@@ -650,5 +645,5 @@ export default function ResultPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
