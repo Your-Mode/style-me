@@ -1,3 +1,5 @@
+"use client"
+
 import { analytics } from "@/firebase";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
