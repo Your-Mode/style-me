@@ -64,9 +64,12 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
       const userInfo = localStorage.getItem("userInfo")
       const result = await valueExists("apply", "phone", phoneNumber.replace("-", ""))
 
-      if (!userInfo || !result) {
-        setError("결제 정보를 찾을 수 없습니다. 먼저 결제를 완료해주세요.")
-        setIsVerifying(false)
+      if (!userInfo) {
+        if (!result) {
+          setError("결제 정보를 찾을 수 없습니다. 먼저 결제를 완료해주세요.")
+          setIsVerifying(false)
+          return
+        }
         return
       }
 
