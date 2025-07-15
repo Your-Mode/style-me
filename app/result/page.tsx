@@ -425,14 +425,6 @@ export default function ResultPage() {
                 </>
               )}
             </Button>
-            <Button
-              onClick={shareResult}
-              variant="outline"
-              className="border-2 border-pink-400 text-pink-600 hover:bg-pink-50 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-transparent"
-            >
-              <Share2 className="h-5 w-5 mr-2" />
-              결과 공유하기
-            </Button>
           </div>
 
           {/* PDF로 추출될 영역 */}
