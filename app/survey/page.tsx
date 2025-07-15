@@ -17,7 +17,7 @@ import {
   AlertCircle,
   Wifi,
   WifiOff,
-  XCircle, Sparkles,
+  XCircle,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { surveyQuestions } from "@/lib/survey-data";
@@ -41,7 +41,7 @@ export default function SurveyPage() {
   const [lastResponseStatus, setLastResponseStatus] = useState<"success" | "failed" | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { mutate: postResult, isPending } = usePostResult();
+  const { mutate: postResult } = usePostResult();
 
   // useChat 훅 사용
   const initialMessage = `안녕하세요! 당신만의 완벽한 스타일을 찾아드릴게요 ✨
