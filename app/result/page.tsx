@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Shirt, Star, Heart, X, Printer } from "lucide-react";
+import { Sparkles, Shirt, Star, Heart, X, Printer, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useBodyResultStore } from "@/hooks/useBodyResultStore";
@@ -609,6 +609,16 @@ export default function ResultPage() {
                     다시 진단하기
                   </Button>
                 </Link>
+                <div className="flex items-center cursor-pointer">
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open("https://pf.kakao.com/_ZXxedn", "_blank")}
+                    className="border-2 border-yellow-400 text-gray-600 hover:bg-gray-50 px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-transparent cursor-pointer"
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2 " />
+                    카카오톡 채널로 가기
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
