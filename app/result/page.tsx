@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Shirt, Star, Share2, Heart, X, Printer } from "lucide-react";
+import { Sparkles, Shirt, Star, Heart, X, Printer } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useBodyResultStore } from "@/hooks/useBodyResultStore";
@@ -289,28 +289,6 @@ export default function ResultPage() {
       alert("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsGeneratingPDF(false);
-    }
-  };
-
-  const shareResult = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `나의 골격진단 결과: ${result?.body_type}`,
-          text: `골격진단 결과가 나왔어요! 저는 ${result?.body_type}이에요. 🎉`,
-          url: window.location.href,
-        });
-      } catch {
-        console.log("공유 취소됨");
-      }
-    } else {
-      // 클립보드에 복사
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        alert("링크가 클립보드에 복사되었습니다!");
-      } catch {
-        alert("링크 복사에 실패했습니다.");
-      }
     }
   };
 
