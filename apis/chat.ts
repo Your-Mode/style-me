@@ -64,7 +64,7 @@ export interface BodyResultResponse {
 export const postBodyResult = async (req: BodyResultRequest) => {
   try {
     const response = await axiosInstance.post<BodyResultResponse>("/assistant/body-result", req, {
-      timeout: 50000,
+      timeout: 100000,
     });
     return response.data;
   } catch ( error ) {
