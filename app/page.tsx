@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   ArrowRight,
   Star,
-  Users,
   MessageCircle,
   Phone,
   Mail,
@@ -15,16 +14,16 @@ import {
   Check,
   Heart,
   Sparkles,
-} from "lucide-react"
-import Link from "next/link"
-import { useState, useEffect } from "react"
+} from "lucide-react";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [showContact, setShowContact] = useState(false)
+  const [showContact, setShowContact] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
@@ -32,11 +31,13 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+            <div
+              className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
               <Heart className="h-5 w-5 text-white" />
             </div>
             <div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+              <span
+                className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
                 Style Me
               </span>
               <p className="text-xs text-gray-500 font-medium">Personal Styling</p>
@@ -64,12 +65,14 @@ export default function HomePage() {
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-32 h-32 bg-rose-200/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-200/30 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-purple-200/20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div
+            className="absolute top-1/2 left-1/2 w-60 h-60 bg-purple-200/20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
         </div>
 
         <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full mb-8 shadow-lg border border-rose-200">
+            <div
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full mb-8 shadow-lg border border-rose-200">
               <Sparkles className="h-4 w-4 text-rose-500 mr-2" />
               <span className="text-sm font-medium text-rose-700">AI 기반 개인 맞춤 스타일링</span>
             </div>
@@ -92,9 +95,11 @@ export default function HomePage() {
 
             {/* Service Card */}
             <div className="max-w-lg mx-auto mb-16">
-              <Card className="border-2 border-rose-200 bg-white/80 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2">
+              <Card
+                className="border-2 border-rose-200 bg-white/80 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2">
                 <CardContent className="p-10 text-center">
-                  <div className="w-20 h-20 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                  <div
+                    className="w-20 h-20 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                     <span className="text-3xl">👗</span>
                   </div>
                   <h3 className="text-3xl font-bold text-gray-800 mb-3">AI 골격진단</h3>
@@ -127,7 +132,8 @@ export default function HomePage() {
                     </li>
                   </ul>
                   <Link href="/apply">
-                    <Button className="w-full bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <Button
+                      className="w-full bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                       스타일링 시작하기
                     </Button>
                   </Link>
@@ -177,7 +183,8 @@ export default function HomePage() {
                     <span className="text-3xl line-through text-gray-400 mr-4">30,000원</span>
                     <span className="text-5xl font-bold text-rose-500">0원</span>
                   </div>
-                  <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full mb-4">
+                  <div
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full mb-4">
                     <span className="text-rose-700 font-bold">🎉 런칭 기념 무료 이벤트</span>
                   </div>
                   <p className="text-gray-600 text-lg leading-relaxed">
@@ -260,8 +267,8 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                name: "김민지",
-                age: "20대 직장인",
+                name: "김*지",
+                age: "20대",
                 review:
                   "정말 신기해요! 제가 몰랐던 제 매력을 발견했어요. 이제 옷 쇼핑이 훨씬 재미있고 확신을 가지고 할 수 있게 되었어요.",
                 rating: 5,
@@ -269,8 +276,8 @@ export default function HomePage() {
                 emoji: "🌸",
               },
               {
-                name: "박서연",
-                age: "30대 마케터",
+                name: "박*연",
+                age: "30대",
                 review:
                   "AI 분석이 정말 정확해요! 무료 이벤트라니 믿을 수 없어요. 스타일링 가이드 덕분에 매일 코디가 즐거워요.",
                 rating: 5,
@@ -278,8 +285,8 @@ export default function HomePage() {
                 emoji: "⭐",
               },
               {
-                name: "이지은",
-                age: "20대 대학생",
+                name: "이*은",
+                age: "20대",
                 review:
                   "평생 써먹을 수 있는 스타일 바이블을 얻었어요! 특히 컬러 추천이 정말 도움이 되었고, 친구들도 스타일이 좋아졌다고 해요.",
                 rating: 5,
@@ -287,8 +294,8 @@ export default function HomePage() {
                 emoji: "🌿",
               },
               {
-                name: "최유진",
-                age: "40대 주부",
+                name: "최*진",
+                age: "40대",
                 review:
                   "나이가 들면서 어떤 옷을 입어야 할지 고민이 많았는데, 이제 확신을 가지고 쇼핑할 수 있어요. 정말 추천합니다!",
                 rating: 5,
@@ -296,8 +303,8 @@ export default function HomePage() {
                 emoji: "🌸",
               },
               {
-                name: "정하늘",
-                age: "30대 창업가",
+                name: "정*늘",
+                age: "30대",
                 review:
                   "비즈니스 미팅에서 어떤 스타일이 좋을지 몰랐는데, 진단 결과로 완전히 이미지가 바뀌었어요. 자신감이 생겼습니다!",
                 rating: 5,
@@ -305,8 +312,8 @@ export default function HomePage() {
                 emoji: "⭐",
               },
               {
-                name: "한소희",
-                age: "20대 인플루언서",
+                name: "한*희",
+                age: "20대",
                 review: "친구 추천으로 했는데 정말 만족해요. 특히 브랜드 추천이 정확해서 이제 쇼핑할 때 헤매지 않아요!",
                 rating: 5,
                 type: "내추럴",
@@ -319,7 +326,8 @@ export default function HomePage() {
               >
                 <CardContent className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mr-4 shadow-lg">
+                    <div
+                      className="w-12 h-12 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mr-4 shadow-lg">
                       <span className="text-white font-bold text-lg">{review.name[0]}</span>
                     </div>
                     <div>
@@ -332,9 +340,10 @@ export default function HomePage() {
                       <Star key={i} className="h-5 w-5 text-rose-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-6 leading-relaxed font-medium">`{review.review}`</p>
+                  <p className="text-gray-700 mb-6 leading-relaxed font-medium">{review.review}</p>
                   <div className="text-right">
-                    <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 text-sm font-bold rounded-full border border-rose-200">
+                    <span
+                      className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 text-sm font-bold rounded-full border border-rose-200">
                       <span className="mr-2">{review.emoji}</span>
                       {review.type}
                     </span>
@@ -441,7 +450,8 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                <div
+                  className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
                   <Heart className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -453,16 +463,6 @@ export default function HomePage() {
                 AI 기반 개인 맞춤 스타일링으로 당신만의 완벽한 스타일을 찾아보세요. 전문 스타일리스트가 설계한 정확한
                 진단과 맞춤형 가이드를 제공합니다.
               </p>
-              <div className="flex space-x-6">
-                <div className="flex items-center text-gray-400">
-                  <Star className="h-5 w-5 text-rose-400 mr-2" />
-                  <span>4.9/5 평점</span>
-                </div>
-                <div className="flex items-center text-gray-400">
-                  <Users className="h-5 w-5 text-rose-400 mr-2" />
-                  <span>5,000+ 고객</span>
-                </div>
-              </div>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-6 text-rose-400">서비스</h3>
@@ -494,11 +494,11 @@ export default function HomePage() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center">
                   <Mail className="h-5 w-5 mr-3" />
-                  <span>contact@styleme.co.kr</span>
+                  <span>urmode@naver.com</span>
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-5 w-5 mr-3" />
-                  <span>1588-0000</span>
+                  <span>010-6415-1548</span>
                 </div>
                 <div className="text-sm">
                   <p>평일 09:00 - 18:00</p>
@@ -508,7 +508,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Style Me. All rights reserved.</p>
+            <p>&copy; 2025 Style Me. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -527,11 +527,16 @@ export default function HomePage() {
               <div className="space-y-4">
                 <div className="flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200">
                   <Mail className="h-6 w-6 text-rose-500 mr-4" />
-                  <span className="text-gray-800">contact@styleme.co.kr</span>
+                  <span className="text-gray-800">urmode@naver.com</span>
                 </div>
                 <div className="flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200">
                   <Phone className="h-6 w-6 text-rose-500 mr-4" />
-                  <span className="text-gray-800">1588-0000</span>
+                  <span className="text-gray-800">010-6415-1548</span>
+                </div>
+                <div className="flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200 cursor-pointer"
+                     onClick={() => window.open("https://pf.kakao.com/_ZXxedn", "_blank")}>
+                  <MessageCircle className="h-6 w-6 text-rose-500 mr-4" />
+                  <span className="text-gray-800">카카오톡 채널로 가기</span>
                 </div>
                 <p className="text-sm text-gray-600 text-center">평일 09:00 - 18:00 (주말, 공휴일 휴무)</p>
               </div>
@@ -556,5 +561,5 @@ export default function HomePage() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

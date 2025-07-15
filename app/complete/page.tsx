@@ -196,13 +196,13 @@ export default function CompletePage() {
                     4
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-2">카카오톡 상담 (선택)</h4>
+                    <h4 className="font-semibold text-gray-800 mb-2">카카오톡 상담</h4>
                     <p className="text-gray-600 mb-3">
                       추가 궁금한 점이나 개인 맞춤 조언이 필요하시면 카카오톡으로 편하게 상담받으세요. 런칭 기념으로
                       3개월간 무료 상담을 제공해드립니다!
                     </p>
                     <Button
-                      onClick={() => window.open("https://pf.kakao.com/_your_channel_id", "_blank")}
+                      onClick={() => window.open("https://pf.kakao.com/_ZXxedn", "_blank")}
                       variant="outline"
                       className="border-yellow-400 text-yellow-600 hover:bg-yellow-50"
                     >
@@ -326,21 +326,13 @@ export default function CompletePage() {
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Button
-                    onClick={() => window.open("https://pf.kakao.com/_your_channel_id", "_blank")}
+                    onClick={() => window.open("https://pf.kakao.com/_ZXxedn", "_blank")}
                     className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-4 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   >
                     <div className="flex items-center">
-                      <div className="w-6 h-6 bg-yellow-500 rounded mr-3"></div>
+                      <MessageCircle className="h-5 w-5 mr-2" />
                       카카오톡 채널 추가
                     </div>
-                  </Button>
-                  <Button
-                    onClick={() => window.open("https://open.kakao.com/o/your_openchat_id", "_blank")}
-                    variant="outline"
-                    className="border-2 border-yellow-400 text-yellow-600 hover:bg-yellow-50 px-8 py-4 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    오픈채팅 참여
                   </Button>
                 </div>
 
@@ -363,11 +355,11 @@ export default function CompletePage() {
                 className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-8">
                 <div className="flex items-center text-gray-600">
                   <Mail className="h-4 w-4 mr-2" />
-                  <span>contact@bodytype.co.kr</span>
+                  <span>urmode@naver.com</span>
                 </div>
                 <div className="flex items-center text-gray-600">
                   <Phone className="h-4 w-4 mr-2" />
-                  <span>1588-0000</span>
+                  <span>010-6415-1548</span>
                 </div>
               </div>
               <p className="text-sm text-gray-500 text-center mt-2">평일 09:00 - 18:00 (주말, 공휴일 휴무)</p>

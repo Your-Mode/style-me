@@ -74,7 +74,7 @@ export const surveyQuestions: SurveyQuestion[] = [
     id: 5,
     question: "허리의 실루엣은 어떠한가요?",
     options: [
-      { value: "A", label: "허리가 짧고 직선적인 ��낌이며 굴곡이 적다", type: "straight" },
+      { value: "A", label: "허리가 짧고 직선적인 느낌이며 굴곡이 적다", type: "straight" },
       { value: "B", label: "허리가 길고 자연스럽게 잘록하다", type: "wave" },
       { value: "C", label: "허리가 길고 굴곡이 거의 없이 일자로 뻗어 있다", type: "natural" },
     ],
