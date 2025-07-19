@@ -1,4 +1,6 @@
 import { axiosInstance } from "@/apis/axios-instance";
+import { addDoc, collection } from "@firebase/firestore";
+import { db } from "@/firebase";
 
 export interface ChatMessage {
   type: "bot" | "user" | "system";
@@ -66,6 +68,12 @@ export const postBodyResult = async (req: BodyResultRequest) => {
     const response = await axiosInstance.post<BodyResultResponse>("/assistant/body-result", req, {
       timeout: 100000,
     });
+    const colRef = collection(db, 'body_result');
+    const newReq = {
+      ...req,
+      createdAt: new Date().toLocaleString().toString(),
+    };
+    await addDoc(colRef, newReq);
     return response.data;
   } catch ( error ) {
     console.error("Failed to post body result:", error);

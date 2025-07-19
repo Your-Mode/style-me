@@ -3,6 +3,7 @@ import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where
 import { BodyDiagnosisFormData } from "@/types/body";
 import { serverTimestamp } from "@firebase/database";
 import { getAnalytics, isSupported } from "@firebase/analytics";
+import { BodyResultRequest } from "@/apis/chat";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,7 +22,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 export let analytics: ReturnType<typeof getAnalytics> | null = null;
 if (typeof window !== 'undefined') {
