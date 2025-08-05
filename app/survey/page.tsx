@@ -3,18 +3,14 @@
 import type React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import {
   Bot,
   Send,
   CheckCircle,
   Loader2,
-  MousePointer,
   Heart,
-  AlertCircle,
   Wifi,
   WifiOff,
   XCircle,
@@ -51,7 +47,11 @@ export default function SurveyPage() {
 옵션을 선택하거나 자유롭게 대화하듯 답변해주세요.
 
 첫 번째 질문입니다:
-${surveyQuestions[0].question}`;
+${surveyQuestions[0].question}
+- ${surveyQuestions[0].options[0].label}
+- ${surveyQuestions[0].options[1].label}
+- ${surveyQuestions[0].options[2].label}
+`;
 
   const { messages, send, addBotMessage, isLoading, lastResponse, error, isError } = useChat(initialMessage);
 
@@ -163,25 +163,16 @@ ${questionText}
         weight: weight,
       };
 
-      console.log(requestData)
+      console.log(requestData);
       postResult(requestData);
     }
-  };
-
-  const handleOptionSelect = () => {
-    if (!selectedAnswer || isProcessing || isLoading) return;
-
-    const question = surveyQuestions[currentQuestion];
-    const selectedOption = question.options.find((opt) => opt.value === selectedAnswer);
-    const answerText = `${selectedAnswer}. ${selectedOption?.label}`;
-
-    send(question.question, answerText);
   };
 
   const handleSend = () => {
     if (!inputMessage.trim() || isProcessing || isLoading) return;
 
     const question = surveyQuestions[currentQuestion];
+    console.log(question);
     send(question.question, inputMessage.trim());
     setInputMessage("");
   };
@@ -228,23 +219,8 @@ ${questionText}
                 FAQ
               </Link>
             </nav>
-            {/* 연결 상태 표시 */}
-            <div className="flex items-center space-x-2">
-              {connectionStatus === "online" ? (
-                <div className="flex items-center text-green-600">
-                  <Wifi className="h-4 w-4 mr-1" />
-                  <span className="text-xs font-medium">온라인</span>
-                </div>
-              ) : (
-                <div className="flex items-center text-red-600">
-                  <WifiOff className="h-4 w-4 mr-1" />
-                  <span className="text-xs font-medium">오프라인</span>
-                </div>
-              )}
-            </div>
           </div>
         </header>
-
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           {/* Progress */}
           <div className="mb-6">
@@ -264,7 +240,6 @@ ${questionText}
               />
             </div>
           </div>
-
           {/* 안내 메시지 */}
           <div className="mb-4 p-3 bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg border border-rose-200">
             <div className="flex items-center justify-center space-x-2">
@@ -274,124 +249,9 @@ ${questionText}
               </p>
             </div>
           </div>
-
-          {/* 응답 상태 표시 */}
-          {lastResponseStatus === "failed" && (
-            <div className="mb-4 p-3 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
-              <div className="flex items-center justify-center space-x-2">
-                <XCircle className="h-4 w-4 text-orange-500" />
-                <p className="text-orange-600 text-sm font-medium">
-                  답변을 다시 해주세요. 더 구체적으로 설명하거나 옵션을 선택해주세요.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* 연결 상태 및 로딩 표시 */}
-          {(isLoading || isProcessing || connectionStatus === "offline") && (
-            <div
-              className={`mb-4 p-3 rounded-lg border ${
-                connectionStatus === "offline"
-                  ? "bg-gradient-to-r from-red-50 to-orange-50 border-red-200"
-                  : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-2">
-                {connectionStatus === "offline" ? (
-                  <>
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                    <p className="text-red-600 text-sm font-medium">
-                      네트워크 연결을 확인해주세요. 오프라인 모드로 진행됩니다.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-                    <p className="text-blue-600 text-sm font-medium">
-                      {isLoading ? "AI가 답변을 분석하고 있어요..." : "다음 질문을 준비하고 있어요..."}
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* 질문 영역 */}
-            <Card className="border-2 border-rose-200 bg-white/90 backdrop-blur-sm shadow-xl min-h-[300px]">
-              <CardHeader className="bg-gradient-to-r from-rose-400 to-pink-500 text-white p-4 rounded-t-lg">
-                <CardTitle className="flex items-center text-lg font-bold">
-                  <MousePointer className="h-5 w-5 mr-2" />
-                  질문 {currentQuestion + 1}
-                  {detectedAnswer && lastResponseStatus === "success" && (
-                    <span className="ml-auto text-sm bg-white/20 px-2 py-1 rounded flex items-center">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      AI 선택: {detectedAnswer}
-                    </span>
-                  )}
-                  {lastResponseStatus === "failed" && (
-                    <span className="ml-auto text-sm bg-red-500/20 px-2 py-1 rounded flex items-center">
-                      <XCircle className="h-3 w-3 mr-1" />
-                      다시 답변 필요
-                    </span>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <p className="text-gray-800 font-semibold mb-4">{surveyQuestions[currentQuestion].question}</p>
-
-                <RadioGroup
-                  value={selectedAnswer}
-                  onValueChange={setSelectedAnswer}
-                  className="space-y-3"
-                  disabled={isLoading || isProcessing}
-                >
-                  {surveyQuestions[currentQuestion].options.map((opt) => (
-                    <div
-                      key={opt.value}
-                      className={`flex items-center space-x-3 border-2 p-3 rounded-xl cursor-pointer transition ${
-                        selectedAnswer === opt.value
-                          ? "border-rose-400 bg-rose-50"
-                          : detectedAnswer === opt.value && lastResponseStatus === "success"
-                            ? "border-emerald-400 bg-emerald-50"
-                            : lastResponseStatus === "failed"
-                              ? "border-orange-300 bg-orange-50"
-                              : "border-gray-200 hover:border-rose-300"
-                      } ${isLoading || isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <RadioGroupItem value={opt.value} id={opt.value} />
-                      <Label htmlFor={opt.value} className="flex-1 cursor-pointer text-sm md:text-base">
-                        <span className="font-bold text-rose-500 mr-2">{opt.value}.</span>
-                        {opt.label}
-                      </Label>
-                      {detectedAnswer === opt.value && lastResponseStatus === "success" && (
-                        <CheckCircle className="h-5 w-5 text-emerald-500" />
-                      )}
-                    </div>
-                  ))}
-                </RadioGroup>
-
-                <Button
-                  onClick={handleOptionSelect}
-                  disabled={!selectedAnswer || isLoading || isProcessing}
-                  className="w-full mt-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white"
-                >
-                  {isLoading || isProcessing ? (
-                    <div className="flex items-center">
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      {connectionStatus === "offline" ? "오프라인 처리 중..." : "AI 분석 중..."}
-                    </div>
-                  ) : currentQuestion === surveyQuestions.length - 1 ? (
-                    "완료하기 🎉"
-                  ) : (
-                    "다음"
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-
+          <div className="">
             {/* 채팅 영역 */}
-            <Card className="border-2 border-pink-200 bg-white/90 backdrop-blur-sm shadow-xl flex flex-col h-[70vh]">
+            <div className="bg-white/90 backdrop-blur-sm shadow-xl flex flex-col h-[70vh]">
               <CardHeader className="bg-gradient-to-r from-pink-400 to-purple-500 text-white p-4 rounded-t-lg">
                 <CardTitle className="flex items-center text-lg font-bold">
                   <Bot className="h-5 w-5 mr-2" />
@@ -464,7 +324,7 @@ ${questionText}
                         : "AI가 답변을 분석해드려요"}
                 </p>
               </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
       </div>

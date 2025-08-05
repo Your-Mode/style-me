@@ -13,14 +13,14 @@ export interface SurveyQuestion {
   }
 }
 
-export const surveyQuestions: SurveyQuestion[] = [
+export const surveyQuestions = [
   {
     id: 1,
-    question: "전체적인 골격의 인상은 어떠한가요?",
+    question: "피부는 어떤 느낌인가요?",
     options: [
-      { value: "A", label: "두께감이 있고 육감적이다", type: "straight" },
-      { value: "B", label: "두께감보다는 곡선적이고 평면적이다", type: "wave" },
-      { value: "C", label: "뼈가 확실하게 부각되고, 마른 편이다", type: "natural" },
+      { value: "A", label: "피부가 탄탄하고 쫀쫀한 탄력감이 느껴진다", type: "straight" },
+      { value: "B", label: "피부가 부드럽고 말랑말랑하다", type: "wave" },
+      { value: "C", label: "피부가 얇고 건조한 느낌이다", type: "natural" },
     ],
     chatbotResponse: {
       A: "건강하고 탄탄한 골격을 가지고 계시는군요! 💪 직선적인 매력이 느껴져요.",
@@ -30,25 +30,25 @@ export const surveyQuestions: SurveyQuestion[] = [
   },
   {
     id: 2,
-    question: "피부를 만졌을 때 느껴지는 느낌은 어떠한가요?",
+    question: "몸의 전체적인 느낌은 어떠한가요?",
     options: [
-      { value: "A", label: "피부가 탄탄하고 쫀득한 편이다", type: "straight" },
-      { value: "B", label: "피부가 부드럽고 살이 부드러운 편이다", type: "wave" },
-      { value: "C", label: "피부가 얇고 건조한 느낌이며, 뼈가 좀 더 도드라져 보인다", type: "natural" },
+      { value: "A", label: "전체적으로 근육이 잘 느껴지고, 근육이 잘 붙는 편이다", type: "straight" },
+      { value: "B", label: "전체적으로 지방이 잘 느껴지고, 근육이 잘 붙지 않는 편이다", type: "wave" },
+      { value: "C", label: "근육이나 지방이 잘 붙지 않는 편이다", type: "natural" },
     ],
     chatbotResponse: {
-      A: "탄력있고 건강한 피부질감이시네요! 정말 좋은 신호예요 😊",
-      B: "부드럽고 매끄러운 질감이군요! 촉촉한 느낌이 좋아요 💕",
-      C: "섬세하고 우아한 피부질감을 가지고 계시네요! 고급스러워요 ✨",
+      A: "운동 효과가 잘 나타나는 체질이시군요! 활동적인 분이시네요 💪",
+      B: "부드러운 라인을 자연스럽게 유지하는 체질이에요! 😌",
+      C: "자연스럽게 슬림한 라인을 유지하시는군요! 부러워요 🌟",
     },
   },
   {
     id: 3,
-    question: "근육이 붙는 정도는 어떠한가요?",
+    question: "살찌는 순서는 어떠한가요?",
     options: [
-      { value: "A", label: "근육이 붙기 쉽다", type: "straight" },
-      { value: "B", label: "근육이 붙기 어렵다", type: "wave" },
-      { value: "C", label: "근육이나 지방이 잘 붙지 않는다", type: "natural" },
+      { value: "A", label: "상체 (얼굴, 팔뚝, 배)에 살이 먼저 붙는 편이다", type: "straight" },
+      { value: "B", label: "하체 (허벅지, 배, 특히 승마살)에 살이 먼저 붙는 편이다", type: "wave" },
+      { value: "C", label: "살이나 근육이 잘 붙지 않으며, 몸 전체에 고르게 살이 붙는 편이다", type: "natural" },
     ],
     chatbotResponse: {
       A: "운동 효과가 잘 나타나는 체질이시군요! 활동적인 분이시네요 💪",
@@ -58,11 +58,11 @@ export const surveyQuestions: SurveyQuestion[] = [
   },
   {
     id: 4,
-    question: "목의 길이와 두께는 어떠한가요?",
+    question: "목 길이와 두께는 어떠한가요?",
     options: [
-      { value: "A", label: "목이 약간 짧은 편이다", type: "straight" },
-      { value: "B", label: "목의 길이가 긴 편이고, 부드러운 곡선을 이룬다", type: "wave" },
-      { value: "C", label: "목이 두꺼운 편이나 힘줄이 부각된다", type: "natural" },
+      { value: "A", label: "목이 짧은 편이며, 승모근이 부각되는 편이다", type: "straight" },
+      { value: "B", label: "목이 가늘고 긴 편이며 승모근이 크게 부각되지 않는 편이다", type: "wave" },
+      { value: "C", label: "목이 길고 가늘며, 힘줄이나 뼈가 부각되는 편이다", type: "natural" },
     ],
     chatbotResponse: {
       A: "안정감 있는 목 라인이시네요! 든든한 느낌이에요 👍",
@@ -72,137 +72,11 @@ export const surveyQuestions: SurveyQuestion[] = [
   },
   {
     id: 5,
-    question: "허리의 실루엣은 어떠한가요?",
+    question: "쇄골은 어떠한가요?",
     options: [
-      { value: "A", label: "허리가 짧고 직선적인 느낌이며 굴곡이 적다", type: "straight" },
-      { value: "B", label: "허리가 길고 자연스럽게 잘록하다", type: "wave" },
-      { value: "C", label: "허리가 길고 굴곡이 거의 없이 일자로 뻗어 있다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "탄탄하고 안정적인 허리 라인이네요! 건강미가 넘쳐요 💪",
-      B: "자연스럽고 아름다운 허리 곡선이에요! 완벽한 실루엣이네요 💕",
-      C: "깔끔하고 모던한 허리 라인이군요! 세련된 느낌이에요 ✨",
-    },
-  },
-  {
-    id: 6,
-    question: "바스트의 특징은 어떠한가요?",
-    options: [
-      { value: "A", label: "두께감이 있고, 바스트 탑의 위치가 높다", type: "straight" },
-      { value: "B", label: "두께감이 별로 없고 바스트 탑의 위치가 낮다", type: "wave" },
-      { value: "C", label: "뼈가 두드러지고 가슴 아래 갈비뼈가 잘 보이는 편이다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "볼륨감 있고 당당한 라인이시네요! 자신감이 느껴져요 😊",
-      B: "자연스럽고 부드러운 라인이에요! 우아한 매력이 있어요 💫",
-      C: "세련되고 모던한 실루엣이군요! 고급스러운 느낌이에요 ✨",
-    },
-  },
-  {
-    id: 7,
-    question: "어깨 골격은 어떤가요?",
-    options: [
-      { value: "A", label: "어깨가 넓고 직선적인 느낌이며, 탄탄한 인상을 준다", type: "straight" },
-      { value: "B", label: "어깨가 좁고 둥글게 떨어진다", type: "wave" },
-      { value: "C", label: "어깨뼈가 튀어나와 보이고 직선적인 느낌이 강하다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "당당하고 강인한 어깨 라인이네요! 리더십이 느껴져요 💪",
-      B: "부드럽고 여성스러운 어깨 라인이에요! 온화한 매력이 있어요 💕",
-      C: "개성있고 모던한 어깨 라인이군요! 독특한 매력이 있어요 ✨",
-    },
-  },
-  {
-    id: 8,
-    question: "엉덩이의 특징은 어떠한가요?",
-    options: [
-      { value: "A", label: "엉덩이 라인의 위쪽부터 볼륨감이 있으며 탄력있다", type: "straight" },
-      { value: "B", label: "엉덩이의 근육이 적어 탄력이 부족한 느낌이다", type: "wave" },
-      { value: "C", label: "뼈가 뚜렷하고, 근육이나 지방이 적어 납작한 느낌이다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "건강하고 탄력있는 힙 라인이시네요! 활력이 넘쳐요 🍑",
-      B: "부드럽고 자연스러운 힙 라인이에요! 편안한 느낌이 좋아요 😌",
-      C: "슬림하고 깔끔한 힙 라인이군요! 모델 같은 느낌이에요 ✨",
-    },
-  },
-  {
-    id: 9,
-    question: "허벅지의 느낌은 어떠한가요?",
-    options: [
-      { value: "A", label: "허벅지가 단단하고 근육이 많아 탄력이 있다", type: "straight" },
-      { value: "B", label: "허벅지 앞쪽보다 옆쪽이 더 두드러진다", type: "wave" },
-      { value: "C", label: "근육이 적고 가늘며, 특별한 근육이 없다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "탄탄하고 건강한 허벅지 라인이네요! 운동을 좋아하시나봐요 💪",
-      B: "부드럽고 곡선적인 허벅지 라인이에요! 여성스러운 매력이 있어요 💫",
-      C: "슬림하고 우아한 허벅지 라인이군요! 발레리나 같아요 ✨",
-    },
-  },
-  {
-    id: 10,
-    question: "손의 크기와 모양은 어떤가요?",
-    options: [
-      { value: "A", label: "손이 작고 손바닥에 두께감이 있다", type: "straight" },
-      { value: "B", label: "손바닥이 얇은 편이며, 손등에 힘줄이 두드러진다", type: "wave" },
-      { value: "C", label: "손가락 관절 마디가 눈에 띈다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "아담하고 귀여운 손이시네요! 포근한 느낌이 들어요 👐",
-      B: "섬세하고 우아한 손이에요! 예술가 같은 손이네요 ✋",
-      C: "길고 세련된 손가락이군요! 피아니스트 같은 손이에요 💅",
-    },
-  },
-  {
-    id: 11,
-    question: "손목의 특징은 어떠한가요?",
-    options: [
-      { value: "A", label: "손목이 가늘고 둥근 편이다", type: "straight" },
-      { value: "B", label: "손목이 납작한 편이다", type: "wave" },
-      { value: "C", label: "손목의 뼈가 부각된다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "가늘고 예쁜 손목이시네요! 팔찌가 잘 어울릴 것 같아요 💫",
-      B: "자연스럽고 부드러운 손목이에요! 편안한 느낌이 좋아요 😊",
-      C: "개성있고 세련된 손목 라인이군요! 독특한 매력이 있어요 ✨",
-    },
-  },
-  {
-    id: 12,
-    question: "발의 크기와 모양은 어떠한가요?",
-    options: [
-      { value: "A", label: "발이 작고 발목이 가늘며 단단하다", type: "straight" },
-      { value: "B", label: "발 크기가 보통이며, 발목 두께는 적당하다", type: "wave" },
-      { value: "C", label: "발이 크고 뼈가 두드러진다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "아담하고 예쁜 발이시네요! 하이힐이 잘 어울릴 것 같아요 👠",
-      B: "균형잡힌 발 모양이에요! 어떤 신발이든 잘 어울릴 것 같아요 😊",
-      C: "길고 세련된 발이군요! 모델 같은 발이네요 ✨",
-    },
-  },
-  {
-    id: 13,
-    question: "무릎의 모양은 어떤가요?",
-    options: [
-      { value: "A", label: "무릎이 작고 부각되지 않는 편이다", type: "straight" },
-      { value: "B", label: "무릎이 둥글고 살짝 나왔다", type: "wave" },
-      { value: "C", label: "무릎의 뼈가 뚜렷하게 보이고 큰 편이다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "깔끔하고 예쁜 무릎이시네요! 미니스커트가 잘 어울릴 것 같아요 😊",
-      B: "부드럽고 자연스러운 무릎 라인이에요! 여성스러운 매력이 있어요 💫",
-      C: "개성있고 모던한 무릎 라인이군요! 독특한 아름다움이 있어요 ✨",
-    },
-  },
-  {
-    id: 14,
-    question: "쇄골의 실루엣은 어떤가요?",
-    options: [
-      { value: "A", label: "쇄골이 거의 보이지 않는다", type: "straight" },
-      { value: "B", label: "쇄골이 가늘고 자연스럽게 보인다", type: "wave" },
-      { value: "C", label: "쇄골이 뚜렷하게 보이고 뼈가 도드라진다", type: "natural" },
+      { value: "A", label: "쇄골이 전체적으로 거의 보이지 않는 편이다", type: "straight" },
+      { value: "B", label: "쇄골이 가늘고 자연스럽게 보이는 편이다", type: "wave" },
+      { value: "C", label: "쇄골이 뚜렷하게 보이고 뼈가 도드라지는 편이다", type: "natural" },
     ],
     chatbotResponse: {
       A: "부드럽고 자연스러운 쇄골 라인이네요! 포근한 느낌이 들어요 😊",
@@ -211,48 +85,147 @@ export const surveyQuestions: SurveyQuestion[] = [
     },
   },
   {
+    id: 6,
+    question: "어깨는 어떠한가요?",
+    options: [
+      { value: "A", label: "어깨가 넓고 직선적인 느낌이며, 탄탄한 편이다", type: "straight" },
+      { value: "B", label: "어깨가 좁고 둥글며 좁은 편이다", type: "wave" },
+      { value: "C", label: "어깨가 넓은 편이고, 어깨 뼈가 부각되는 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "당당하고 강인한 어깨 라인이네요! 리더십이 느껴져요 💪",
+      B: "부드럽고 여성스러운 어깨 라인이에요! 온화한 매력이 있어요 💕",
+      C: "개성있고 모던한 어깨 라인이군요! 독특한 매력이 있어요 ✨",
+    },
+  },
+  {
+    id: 7,
+    question: "바스트는 어떠한가요?",
+    options: [
+      { value: "A", label: "바스트탑이 높고, 볼륨감과 탄력이 있는 편이다", type: "straight" },
+      { value: "B", label: "바스트탑이 낮고 볼륨감이 적으며, 부드러운 편이다", type: "wave" },
+      { value: "C", label: "바스트보다 가슴 주변(쇄골, 갈비뼈 등) 뼈가 부각되는 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "볼륨감 있고 당당한 라인이시네요! 자신감이 느껴져요 😊",
+      B: "자연스럽고 부드러운 라인이에요! 우아한 매력이 있어요 💫",
+      C: "세련되고 모던한 실루엣이군요! 고급스러운 느낌이에요 ✨",
+    },
+  },
+  {
+    id: 8,
+    question: "허리 길이나 라인은 어떠한가요?",
+    options: [
+      { value: "A", label: "허리가 짧고 직선적인 느낌이며 굴곡이 적다", type: "straight" },
+      { value: "B", label: "허리가 길고 자연스럽게 잘록한 느낌이 있다", type: "wave" },
+      { value: "C", label: "허리가 길고 굴곡이 거의 없이 일자로 뻗은 느낌이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "탄탄하고 안정적인 허리 라인이네요! 건강미가 넘쳐요 💪",
+      B: "자연스럽고 아름다운 허리 곡선이에요! 완벽한 실루엣이네요 💕",
+      C: "깔끔하고 모던한 허리 라인이군요! 세련된 느낌이에요 ✨",
+    },
+  },
+  {
+    id: 9,
+    question: "엉덩이의 실루엣은 어떠한가요?",
+    options: [
+      { value: "A", label: "엉덩이가 크고 볼륨감이 있으며 탄력이 있다", type: "straight" },
+      { value: "B", label: "입체감이 적고, 근육이 부족해 아래로 쳐진 편이다", type: "wave" },
+      { value: "C", label: "입체감이 적고 납작한 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "건강하고 탄력있는 힙 라인이시네요! 활력이 넘쳐요 🍑",
+      B: "부드럽고 자연스러운 힙 라인이에요! 편안한 느낌이 좋아요 😌",
+      C: "슬림하고 깔끔한 힙 라인이군요! 모델 같은 느낌이에요 ✨",
+    },
+  },
+  {
+    id: 10,
+    question: "허벅지의 실루엣은 어떠한가요?",
+    options: [
+      { value: "A", label: "허벅지가 탄탄하고 근육이 많아 탄력이 있다", type: "straight" },
+      { value: "B", label: "허벅지 바깥쪽 (승마살)에 살이 잘 붙는 편이다", type: "wave" },
+      { value: "C", label: "허벅지 굵기가 전체적으로 얇은 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "탄탄하고 건강한 허벅지 라인이네요! 운동을 좋아하시나봐요 💪",
+      B: "부드럽고 곡선적인 허벅지 라인이에요! 여성스러운 매력이 있어요 💫",
+      C: "슬림하고 우아한 허벅지 라인이군요! 발레리나 같아요 ✨",
+    },
+  },
+  {
+    id: 11,
+    question: "무릎 뼈의 모양은 어떠한가요?",
+    options: [
+      { value: "A", label: "무릎 뼈가 작고 둥글며, 뼈가 눈에 잘 띄지 않는 편이다", type: "straight" },
+      { value: "B", label: "무릎 뼈는 보통이고 약간 눈에 띄는 편이다", type: "wave" },
+      { value: "C", label: "무릎 뼈가 뚜렷하고 큰 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "깔끔하고 예쁜 무릎이시네요! 미니스커트가 잘 어울릴 것 같아요 😊",
+      B: "부드럽고 자연스러운 무릎 라인이에요! 여성스러운 매력이 있어요 💫",
+      C: "개성있고 모던한 무릎 라인이군요! 독특한 아름다움이 있어요 ✨",
+    },
+  },
+  {
+    id: 12,
+    question: "팔의 모양은 어떠한가요?",
+    options: [
+      { value: "A", label: "손목이 가늘지만 팔 근육이 탄탄한 편이다", type: "straight" },
+      { value: "B", label: "팔이 부드럽게 이어지는 느낌이며 말랑한 편이다", type: "wave" },
+      { value: "C", label: "팔이 가늘고 어깨, 팔꿈치, 손목뼈가 부각되는 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "근육이 느껴지는 건강한 팔 라인이에요! 파워풀한 매력이 있어요 💪",
+      B: "부드럽고 자연스러운 팔 라인이네요! 여리여리한 인상이에요 😊",
+      C: "가늘고 길어 보이는 팔 라인이에요! 모델 같은 인상이 있어요 ✨",
+    },
+  },
+  {
+    id: 13,
+    question: "손의 모양은 어떠한가요?",
+    options: [
+      { value: "A", label: "손 크기는 작은 편이고, 손바닥에 두께감이 있다", type: "straight" },
+      { value: "B", label: "손 크기는 보통이며, 손가락이 가늘고 얇은 편이다", type: "wave" },
+      { value: "C", label: "손가락이 길고 가늘며, 뼈와 핏줄 등이 눈에 띄는 편이다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "아담하고 귀여운 손이시네요! 포근한 느낌이 들어요 👐",
+      B: "섬세하고 우아한 손이에요! 예술가 같은 손이네요 ✋",
+      C: "길고 세련된 손가락이군요! 피아니스트 같은 손이에요 💅",
+    },
+  },
+  {
+    id: 14,
+    question: "한 쪽 손목을 다른 한손으로 감쌌을때 어떤 느낌인가요?",
+    options: [
+      { value: "A", label: "손목이 가늘고 동그란 느낌이다", type: "straight" },
+      { value: "B", label: "손목이 타원형 같거나 납작한 느낌이다", type: "wave" },
+      { value: "C", label: "손목의 뼈나 힘줄이 잘 느껴진다", type: "natural" },
+    ],
+    chatbotResponse: {
+      A: "가늘고 예쁜 손목이시네요! 팔찌가 잘 어울릴 것 같아요 💫",
+      B: "자연스럽고 부드러운 손목이에요! 편안한 느낌이 좋아요 😊",
+      C: "개성있고 세련된 손목 라인이군요! 독특한 매력이 있어요 ✨",
+    },
+  },
+  {
     id: 15,
-    question: "얼굴형은 어떤가요?",
+    question: "전체적인 체형의 느낌은 어떠한가요?",
     options: [
-      { value: "A", label: "둥근 얼굴이며, 볼이 통통한 편이다", type: "straight" },
-      { value: "B", label: "계란형 얼굴이며, 얼굴 선이 부드럽다", type: "wave" },
-      { value: "C", label: "광대뼈나 턱선이 도드라져 보인다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "귀엽고 사랑스러운 얼굴형이시네요! 친근한 매력이 넘쳐요 🥰",
-      B: "완벽한 계란형 얼굴이에요! 정말 부러운 얼굴형이네요 💕",
-      C: "개성있고 세련된 얼굴형이군요! 모델 같은 얼굴이에요 ✨",
-    },
-  },
-  {
-    id: 16,
-    question: "전체적인 체형은 어떤가요?",
-    options: [
-      { value: "A", label: "상체가 발달한 느낌이며 허리가 짧고 탄탄한 인상을 준다", type: "straight" },
+      { value: "A", label: "상체가 발달한 느낌이며 허리가 짧고 탄탄한 느낌이다", type: "straight" },
       { value: "B", label: "하체가 상대적으로 부각되며 전체적으로 여리여리한 느낌이다", type: "wave" },
-      { value: "C", label: "전체적으로 뼈대가 도드라져 보이고 직선적인 느낌이 강하다", type: "natural" },
+      { value: "C", label: "전체적으로 뼈가 도드라져보이고 직선적인 느낌이 강하다", type: "natural" },
     ],
     chatbotResponse: {
-      A: "균형잡힌 상체 중심의 체형이시네요! 건강미가 넘쳐요 💪",
-      B: "우아하고 여성스러운 체형이에요! 섬세한 아름다움이 있어요 💕",
-      C: "모던하고 세련된 체형이군요! 패션모델 같은 느낌이에요 ✨",
+      A: "건강하고 든든한 체형이시군요! 활력이 느껴져요 💪",
+      B: "여리여리하고 부드러운 인상이세요! 포근한 매력이 있어요 🌸",
+      C: "세련되고 시크한 체형이에요! 모델 포스가 넘쳐요 ✨",
     },
   },
-  {
-    id: 17,
-    question: "살이 쪘을 때 어디부터 살이 찌시나요?",
-    options: [
-      { value: "A", label: "팔, 가슴, 배 등 상체 위주로 찐다", type: "straight" },
-      { value: "B", label: "엉덩이, 승마살, 허벅지와 같이 하체 위주로 찐다", type: "wave" },
-      { value: "C", label: "살이 잘 붙지 않고 골격이나 관절이 부각되는 편이다", type: "natural" },
-    ],
-    chatbotResponse: {
-      A: "상체 중심의 체중 변화 패턴이시네요! 드디어 마지막 질문이었어요! 🎉",
-      B: "하체 중심의 체중 변화 패턴이군요! 모든 질문이 완료되었어요! 🎉",
-      C: "자연스럽게 슬림함을 유지하는 체질이시네요! 진단이 끝났어요! 🎉",
-    },
-  },
-]
+];
+
 
 export type BodyType = "straight" | "wave" | "natural"
 

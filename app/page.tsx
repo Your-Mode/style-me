@@ -130,6 +130,10 @@ export default function HomePage() {
                       <Check className="h-4 w-4 text-rose-400 mr-3" />
                       체형별 코디 가이드
                     </li>
+                    <li className="flex items-center text-red-400">
+                      <Star className="h-4 w-4 text-rose-400 mr-3" />
+                      카카오톡 채널로 연락주시면 1:1 상담을 통해 더 자세한 정보를 드립니다
+                    </li>
                   </ul>
                   <Link href="/apply">
                     <Button
