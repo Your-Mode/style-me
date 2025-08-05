@@ -29,8 +29,6 @@ export default function SurveyPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const { gender, height, weight } = useApplyUserInfoStore();
   const [answers, setAnswers] = useState<string[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [detectedAnswer, setDetectedAnswer] = useState<string>("");
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<"online" | "offline">("online");
@@ -98,7 +96,6 @@ ${surveyQuestions[0].question}
   /* ---------------- handlers ---------------- */
   const handleChatResponse = async (response: ChatResponse) => {
     setIsProcessing(true);
-    setDetectedAnswer(response.selected || "A");
 
     // isSuccess 체크
     if (!response.isSuccess) {
@@ -106,8 +103,6 @@ ${surveyQuestions[0].question}
       setLastResponseStatus("failed");
 
       setTimeout(() => {
-        setDetectedAnswer("");
-        setSelectedAnswer("");
         setIsProcessing(false);
       }, 1000);
 
@@ -118,7 +113,6 @@ ${surveyQuestions[0].question}
     setLastResponseStatus("success");
     const newAnswers = [...answers, response.selected];
     setAnswers(newAnswers);
-    setSelectedAnswer("");
 
     // 다음 질문 또는 완료 처리
     if (currentQuestion < surveyQuestions.length - 1) {
@@ -135,7 +129,6 @@ ${surveyQuestions[0].question}
 ${questionText}
 
 옵션을 선택하거나 자유롭게 답변해주세요!`);
-        setDetectedAnswer("");
         setIsProcessing(false);
       }, 1500);
     } else {
@@ -163,7 +156,6 @@ ${questionText}
         weight: weight,
       };
 
-      console.log(requestData);
       postResult(requestData);
     }
   };
