@@ -19,12 +19,11 @@ interface AuthGuardProps {
 
 export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
   const [error, setError] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () => valueExists("apply", phoneNumber.replace("-", "")),
     onSuccess: () => {
       setIsVerifying(false)
@@ -119,7 +118,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     }
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
