@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Shield, Phone, AlertCircle, CheckCircle, Heart } from "lucide-react"
 import Link from "next/link"
 import { valueExists } from "@/firebase";
+import { useMutation } from "@tanstack/react-query";
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -18,19 +19,28 @@ interface AuthGuardProps {
 
 export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
   const [error, setError] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
-
-  useEffect(() => {
-    checkAuthentication()
-  }, [])
+  const { mutate } = useMutation({
+    mutationFn: () => valueExists("apply", phoneNumber.replace("-", "")),
+    onSuccess: () => {
+      setIsVerifying(false)
+      setShowSuccess(true)
+      setTimeout(() => {
+        setIsAuthenticated(true)
+      }, 1500)
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  })
 
   const checkAuthentication = async () => {
     try {
-      const result = await valueExists("apply", "phone", phoneNumber.replace("-", ""))
+      const result = await valueExists("apply", phoneNumber.replace("-", ""))
       console.log(result)
 
       if (result) {
@@ -44,7 +54,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
   }
 
   const handlePhoneVerification = async () => {
-    if (!phoneNumber.trim()) {
+    /*if (!phoneNumber.trim()) {
       setError("전화번호를 입력해주세요.")
       return
     }
@@ -54,7 +64,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     if (!phoneRegex.test(phoneNumber.replace(/\s/g, ""))) {
       setError("올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)")
       return
-    }
+    }*/
 
     setIsVerifying(true)
     setError("")
@@ -62,7 +72,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     try {
       // 저장된 사용자 정보와 비교
       const userInfo = localStorage.getItem("userInfo")
-      const result = await valueExists("apply", "phone", phoneNumber.replace("-", ""))
+      const result = await valueExists("apply", phoneNumber.replaceAll("-", ""))
 
       if (!userInfo) {
         if (!result) {
@@ -207,7 +217,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
                     )}
 
                     <Button
-                      onClick={handlePhoneVerification}
+                      onClick={() => mutate()}
                       disabled={isVerifying || !phoneNumber.trim()}
                       className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     >

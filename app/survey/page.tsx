@@ -137,7 +137,7 @@ ${questionText}
         const authToken = localStorage.getItem("aFfuthToken");
         if (authToken) {
           const token = JSON.parse(authToken);
-          await saveSurveyAnswers(token.userId, token.phone, newAnswers);
+          await saveSurveyAnswers(token.phone, newAnswers);
         }
       } catch ( error ) {
         console.error("설문 답변 저장 오류:", error);

@@ -1,5 +1,16 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "@firebase/firestore";
 import { BodyDiagnosisFormData } from "@/types/body";
 import { serverTimestamp } from "@firebase/database";
 import { getAnalytics, isSupported } from "@firebase/analytics";
@@ -31,9 +42,10 @@ if (typeof window !== 'undefined') {
   });
 }
 
+const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
 export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
-  try {
+  /*try {
     const colRef = collection(db, 'apply');
     const newReq = {
       ...req,
@@ -45,12 +57,34 @@ export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
     });
   } catch ( error ) {
     console.error("Error adding document: ", error);
-  }
+  }*/
+  const phoneId = normalizePhone(req.phone);
+  const newReq = {
+    ...req,
+    phone: phoneId,
+    createdAt: new Date().toLocaleString().toString(),
+  };
+  await setDoc(doc(db, 'apply', phoneId), newReq); // 문서 ID = phone
+};
+
+const assertPhoneId = (raw: string) => {
+  const id = normalizePhone(raw);
+  if (!id) throw new Error('phone is empty');
+  if (id.length < 10 || id.length > 11) throw new Error('invalid phone format');
+  return id;
 };
 
 // 설문 답변 저장
-export async function saveSurveyAnswers(userId: string, phone: string, answers: string[]): Promise<string> {
-  try {
+export async function saveSurveyAnswers(phone: string, answers: string[]): Promise<string> {
+  const phoneId = assertPhoneId(phone);
+  const ref = doc(db, 'surveys', phoneId);
+  await setDoc(ref, {
+    phone: phoneId,
+    answers,
+    completedAt: serverTimestamp(),
+  }, { merge: true }); // 필요시 덮어쓰기 허용
+  return ref.id;
+  /*try {
     const docRef = await addDoc(collection(db, "surveys"), {
       userId,
       phone,
@@ -68,10 +102,10 @@ export async function saveSurveyAnswers(userId: string, phone: string, answers: 
   } catch ( error ) {
     console.error("설문 답변 저장 오류:", error);
     throw new Error("설문 답변 저장에 실패했습니다.");
-  }
+  }*/
 }
 
-export async function valueExists(
+/*export async function valueExists(
   collectionName: string,
   fieldName: string,
   value: string,
@@ -80,6 +114,14 @@ export async function valueExists(
   const q = query(colRef, where(fieldName, "==", value));
   const snapshot = await getDocs(q);
   return !snapshot.empty;
+}*/
+
+export async function valueExists(collectionName: string, phone: string): Promise<boolean> {
+  const phoneId = assertPhoneId(phone);
+  console.log(phoneId)
+  const snap = await getDoc(doc(db, collectionName, phoneId));
+  console.log(phoneId, snap)
+  return snap.exists();
 }
 
 export async function getApplyUserInfo(phone: string) {
