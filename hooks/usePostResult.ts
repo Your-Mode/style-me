@@ -10,9 +10,11 @@ export const usePostResult = () => {
   const { setBodyResult } = useBodyResultStore();
   const result = useMutation({
     mutationFn: (request: BodyResultRequest) => postBodyResult(request),
+    retry: 3,
+    retryDelay: 2000,
     onSuccess: (data) => {
       if (data) {
-        setBodyResult(data)
+        setBodyResult(data);
         router.push(`/result`);
       } else {
         // 실패 시 에러 메시지 표시
