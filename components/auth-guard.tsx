@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -38,7 +38,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     }
   })
 
-  const checkAuthentication = async () => {
+  /*const checkAuthentication = async () => {
     try {
       const result = await valueExists("apply", phoneNumber.replace("-", ""))
       console.log(result)
@@ -51,7 +51,7 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }*/
 
   const handlePhoneVerification = async () => {
     /*if (!phoneNumber.trim()) {

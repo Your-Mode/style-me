@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
@@ -8,13 +7,11 @@ import {
   getFirestore,
   query,
   setDoc,
-  updateDoc,
   where,
 } from "@firebase/firestore";
 import { BodyDiagnosisFormData } from "@/types/body";
 import { serverTimestamp } from "@firebase/database";
 import { getAnalytics, isSupported } from "@firebase/analytics";
-import { BodyResultRequest } from "@/apis/chat";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
