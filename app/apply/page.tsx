@@ -90,7 +90,7 @@ export default function ApplyPage() {
       <div className="container mx-auto max-w-5xl">
         {/* Header */}
         <div className="flex items-center mb-8">
-          <Link href="/">
+          <Link href="/public">
             <Button variant="ghost" size="sm" className="mr-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               돌아가기
