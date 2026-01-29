@@ -15,9 +15,10 @@ import { useMutation } from "@tanstack/react-query";
 interface AuthGuardProps {
   children: React.ReactNode
   requiredPage: "complete" | "survey"
+  showHeader?: boolean
 }
 
-export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
+export default function AuthGuard({ children, requiredPage, showHeader = true }: AuthGuardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
@@ -37,39 +38,11 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
     }
   })
 
-  /*const checkAuthentication = async () => {
-    try {
-      const result = await valueExists("apply", phoneNumber.replace("-", ""))
-      console.log(result)
-
-      if (result) {
-        setIsAuthenticated(true)
-      }
-    } catch (error) {
-      console.error("인증 확인 중 오류:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }*/
-
   const handlePhoneVerification = async () => {
-    /*if (!phoneNumber.trim()) {
-      setError("전화번호를 입력해주세요.")
-      return
-    }
-
-    // 전화번호 형식 검증
-    const phoneRegex = /^010-?\d{4}-?\d{4}$/
-    if (!phoneRegex.test(phoneNumber.replace(/\s/g, ""))) {
-      setError("올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)")
-      return
-    }*/
-
     setIsVerifying(true)
     setError("")
 
     try {
-      // 저장된 사용자 정보와 비교
       const userInfo = localStorage.getItem("userInfo")
       const result = await valueExists("apply", phoneNumber.replaceAll("-", ""))
 
@@ -85,11 +58,9 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
       const user = JSON.parse(userInfo)
       const normalizedInput = phoneNumber.replace(/[^0-9]/g, "")
 
-      // 시뮬레이션 딜레이
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
       if (normalizedInput) {
-        // 인증 토큰 생성
         const authToken = {
           phone: user.phone,
           timestamp: new Date().toISOString(),
@@ -132,32 +103,32 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
-        {/* Header */}
-        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm">
-          <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-                <Heart className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
-                  Style Me
-                </span>
-                <p className="text-xs text-gray-500 font-medium">Personal Styling</p>
-              </div>
-            </Link>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
-                홈
+        {showHeader && (
+          <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm">
+            <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+              <Link href="/" className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                  <Heart className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+                    Style Me
+                  </span>
+                  <p className="text-xs text-gray-500 font-medium">Personal Styling</p>
+                </div>
               </Link>
-              <Link href="/apply" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
-                신청하기
-              </Link>
-            </nav>
-          </div>
-        </header>
+              <nav className="hidden md:flex space-x-8">
+                <Link href="/" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+                  홈
+                </Link>
+                <Link href="/apply" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+                  신청하기
+                </Link>
+              </nav>
+            </div>
+          </header>
+        )}
 
-        {/* Auth Content */}
         <div className="py-8 px-4">
           <div className="container mx-auto max-w-md">
             <div className="text-center mb-8">
@@ -255,7 +226,6 @@ export default function AuthGuard({ children, requiredPage }: AuthGuardProps) {
               </CardContent>
             </Card>
 
-            {/* Contact Info */}
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-500 mb-2">문의사항이 있으시면 연락주세요</p>
               <div className="flex justify-center space-x-4 text-sm text-gray-600">
