@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Shirt, Star, Heart, X, Printer, MessageCircle } from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { useBodyResultStore } from "@/hooks/useBodyResultStore";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Sparkles, Shirt, Star, Heart, X, Printer, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect, useRef } from 'react';
+import { useBodyResultStore } from '@/hooks/useBodyResultStore';
+import ResultLoading from '@/app/result/components/result-loading/ResultLoading';
+import ResultError from '@/app/result/components/result-error/ResultError';
 
 export default function ResultPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +25,7 @@ export default function ResultPage() {
       // 설문 답변 안전 파싱
       let answers: string[] = [];
       try {
-        const raw = localStorage.getItem("surveyAnswers");
+        const raw = localStorage.getItem('surveyAnswers');
         answers = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(answers)) answers = [];
       } catch {
@@ -42,7 +44,7 @@ export default function ResultPage() {
 
     try {
       // 고급 인쇄 스타일 추가
-      const printStyle = document.createElement("style");
+      const printStyle = document.createElement('style');
       printStyle.textContent = `
         @media print {
           * {
@@ -185,60 +187,65 @@ export default function ResultPage() {
 
       // 인쇄용 클래스 추가
       if (resultRef.current) {
-        resultRef.current.classList.add("print-content");
+        resultRef.current.classList.add('print-content');
 
         // 모든 그라데이션 요소에 인쇄용 클래스 추가
-        const gradientElements = resultRef.current.querySelectorAll(".bg-gradient-to-r, .bg-gradient-to-br");
+        const gradientElements = resultRef.current.querySelectorAll(
+          '.bg-gradient-to-r, .bg-gradient-to-br',
+        );
         gradientElements.forEach((el) => {
-          if (el.textContent?.includes("골격진단") || el.classList.contains("from-pink-500")) {
-            el.classList.add("print-gradient-pink");
+          if (el.textContent?.includes('골격진단') || el.classList.contains('from-pink-500')) {
+            el.classList.add('print-gradient-pink');
           } else {
-            el.classList.add("print-gradient-purple");
+            el.classList.add('print-gradient-purple');
           }
         });
 
         // 텍스트 그라데이션 처리
-        const textGradients = resultRef.current.querySelectorAll(".bg-clip-text");
+        const textGradients = resultRef.current.querySelectorAll('.bg-clip-text');
         textGradients.forEach((el) => {
-          el.classList.add("print-gradient-text");
+          el.classList.add('print-gradient-text');
         });
 
         // 카드 요소들에 인쇄용 클래스 추가
-        const cards = resultRef.current.querySelectorAll(".shadow-xl, .shadow-lg");
+        const cards = resultRef.current.querySelectorAll('.shadow-xl, .shadow-lg');
         cards.forEach((el) => {
-          el.classList.add("print-card");
+          el.classList.add('print-card');
         });
 
-        const cardHeaders = resultRef.current.querySelectorAll("h1, h2, .text-2xl");
+        const cardHeaders = resultRef.current.querySelectorAll('h1, h2, .text-2xl');
         cardHeaders.forEach((el) => {
-          if (el.classList.contains("text-4xl") || el.classList.contains("text-5xl")) {
-            el.classList.add("print-title");
+          if (el.classList.contains('text-4xl') || el.classList.contains('text-5xl')) {
+            el.classList.add('print-title');
           } else {
-            el.classList.add("print-subtitle");
+            el.classList.add('print-subtitle');
           }
         });
 
-        const cardContents = resultRef.current.querySelectorAll("p, .prose");
+        const cardContents = resultRef.current.querySelectorAll('p, .prose');
         cardContents.forEach((el) => {
-          el.classList.add("print-text");
+          el.classList.add('print-text');
         });
 
         // 아이콘 색상 클래스 추가
-        const icons = resultRef.current.querySelectorAll("svg");
+        const icons = resultRef.current.querySelectorAll('svg');
         icons.forEach((icon) => {
-          const parent = icon.closest(".flex");
-          if (parent?.textContent?.includes("상세 체형") || parent?.textContent?.includes("골격진단")) {
-            icon.classList.add("print-icon-pink");
-          } else if (parent?.textContent?.includes("보완")) {
-            icon.classList.add("print-icon-purple");
-          } else if (parent?.textContent?.includes("추천")) {
-            icon.classList.add("print-icon-green");
-          } else if (parent?.textContent?.includes("피해")) {
-            icon.classList.add("print-icon-red");
-          } else if (parent?.textContent?.includes("스타일링")) {
-            icon.classList.add("print-icon-yellow");
-          } else if (parent?.textContent?.includes("매력")) {
-            icon.classList.add("print-icon-rose");
+          const parent = icon.closest('.flex');
+          if (
+            parent?.textContent?.includes('상세 체형') ||
+            parent?.textContent?.includes('골격진단')
+          ) {
+            icon.classList.add('print-icon-pink');
+          } else if (parent?.textContent?.includes('보완')) {
+            icon.classList.add('print-icon-purple');
+          } else if (parent?.textContent?.includes('추천')) {
+            icon.classList.add('print-icon-green');
+          } else if (parent?.textContent?.includes('피해')) {
+            icon.classList.add('print-icon-red');
+          } else if (parent?.textContent?.includes('스타일링')) {
+            icon.classList.add('print-icon-yellow');
+          } else if (parent?.textContent?.includes('매력')) {
+            icon.classList.add('print-icon-rose');
           }
         });
       }
@@ -247,11 +254,11 @@ export default function ResultPage() {
       const userAgent = navigator.userAgent.toLowerCase();
       let message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
 
-      if (userAgent.includes("chrome")) {
+      if (userAgent.includes('chrome')) {
         message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
-      } else if (userAgent.includes("safari")) {
+      } else if (userAgent.includes('safari')) {
         message = "인쇄 대화상자에서 'PDF' 버튼을 클릭해주세요.";
-      } else if (userAgent.includes("firefox")) {
+      } else if (userAgent.includes('firefox')) {
         message = "인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택해주세요.";
       }
 
@@ -264,117 +271,96 @@ export default function ResultPage() {
       setTimeout(() => {
         document.head.removeChild(printStyle);
         if (resultRef.current) {
-          resultRef.current.classList.remove("print-content");
+          resultRef.current.classList.remove('print-content');
 
           // 추가된 클래스들 안전하게 제거
           const elementsToClean = resultRef.current.querySelectorAll("[class*='print-']");
           elementsToClean.forEach((el) => {
             try {
               // className이 문자열인지 확인하고 안전하게 처리
-              if (el.className && typeof el.className === "string") {
-                el.className = el.className.replace(/print-[a-z-]+/g, "").trim();
+              if (el.className && typeof el.className === 'string') {
+                el.className = el.className.replace(/print-[a-z-]+/g, '').trim();
               } else if (el.classList) {
                 // classList를 사용하여 print- 클래스들 제거
-                const classesToRemove = Array.from(el.classList).filter((cls) => cls.startsWith("print-"));
+                const classesToRemove = Array.from(el.classList).filter((cls) =>
+                  cls.startsWith('print-'),
+                );
                 classesToRemove.forEach((cls) => el.classList.remove(cls));
               }
-            } catch ( error ) {
-              console.warn("클래스 정리 중 오류:", error);
+            } catch (error) {
+              console.warn('클래스 정리 중 오류:', error);
             }
           });
         }
       }, 2000);
-    } catch ( error ) {
-      console.error("PDF 생성 중 오류:", error);
-      alert("PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } catch (error) {
+      console.error('PDF 생성 중 오류:', error);
+      alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsGeneratingPDF(false);
     }
   };
 
   if (isLoading) {
-    return (
-      <div
-        className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative">
-            <div
-              className="w-32 h-32 border-8 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto mb-8"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Sparkles className="h-8 w-8 text-pink-500 animate-pulse" />
-            </div>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">진단 결과를 분석하고 있어요</h2>
-          <p className="text-gray-600 mb-8">당신만의 완벽한 스타일을 찾고 있습니다...</p>
-          <div className="flex justify-center space-x-2">
-            <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-            <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-          </div>
-        </div>
-      </div>
-    );
+    return <ResultLoading />;
   }
 
   if (!result) {
-    return (
-      <div
-        className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
-        <Card className="max-w-md mx-4">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">결과를 불러올 수 없습니다</h2>
-            <p className="text-gray-600 mb-6">설문을 다시 진행해주세요.</p>
-            <Link href="/survey">
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600">설문 다시하기</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <ResultError />;
   }
 
   const getTypeEmoji = (type: string) => {
     switch (type) {
-      case "natural":
-        return "🌿";
-      case "wave":
-        return "🌸";
-      case "straight":
-        return "⭐";
+      case 'natural':
+        return '🌿';
+      case 'wave':
+        return '🌸';
+      case 'straight':
+        return '⭐';
       default:
-        return "✨";
+        return '✨';
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
+    <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50'>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/public" className="flex items-center space-x-3">
-            <div
-              className="w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-              <Heart className="h-5 w-5 text-white" />
+      <header className='sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-rose-200/50 shadow-sm'>
+        <div className='container mx-auto px-6 py-4 flex justify-between items-center'>
+          <Link href='/public' className='flex items-center space-x-3'>
+            <div className='w-10 h-10 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg'>
+              <Heart className='h-5 w-5 text-white' />
             </div>
             <div>
-              <span
-                className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+              <span className='text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent'>
                 Style Me
               </span>
-              <p className="text-xs text-gray-500 font-medium">Personal Styling</p>
+              <p className='text-xs text-gray-500 font-medium'>Personal Styling</p>
             </div>
           </Link>
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/public" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+          <nav className='hidden md:flex space-x-8'>
+            <Link
+              href='/public'
+              className='text-gray-600 hover:text-rose-500 transition-colors font-medium'
+            >
               홈
             </Link>
-            <Link href="/survey" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+            <Link
+              href='/survey'
+              className='text-gray-600 hover:text-rose-500 transition-colors font-medium'
+            >
               다시 진단
             </Link>
-            <Link href="/public#service" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+            <Link
+              href='/public#service'
+              className='text-gray-600 hover:text-rose-500 transition-colors font-medium'
+            >
               서비스
             </Link>
-            <Link href="/public#faq" className="text-gray-600 hover:text-rose-500 transition-colors font-medium">
+            <Link
+              href='/public#faq'
+              className='text-gray-600 hover:text-rose-500 transition-colors font-medium'
+            >
               FAQ
             </Link>
           </nav>
@@ -382,23 +368,23 @@ export default function ResultPage() {
       </header>
 
       {/* Main Content */}
-      <div className="py-8 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <div className='py-8 px-4'>
+        <div className='container mx-auto max-w-6xl'>
           {/* Action Buttons - PDF에서 제외 */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8" data-hide-in-pdf>
+          <div className='flex flex-col sm:flex-row gap-4 justify-center mb-8' data-hide-in-pdf>
             <Button
               onClick={generatePDF}
               disabled={isGeneratingPDF}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className='bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300'
             >
               {isGeneratingPDF ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <div className='flex items-center'>
+                  <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
                   PDF 준비 중...
                 </div>
               ) : (
                 <>
-                  <Printer className="h-5 w-5 mr-2" />
+                  <Printer className='h-5 w-5 mr-2' />
                   깔끔한 PDF 다운로드
                 </>
               )}
@@ -406,30 +392,28 @@ export default function ResultPage() {
           </div>
 
           {/* PDF로 추출될 영역 */}
-          <div ref={resultRef} className="bg-white">
+          <div ref={resultRef} className='bg-white'>
             {/* Header */}
-            <div className="text-center mb-12 pt-8 print-header">
-              <div
-                className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 print-header-circle">
-                <span className="text-4xl">{getTypeEmoji(result.body_type)}</span>
+            <div className='text-center mb-12 pt-8 print-header'>
+              <div className='inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 print-header-circle'>
+                <span className='text-4xl'>{getTypeEmoji(result.body_type)}</span>
               </div>
-              <h1
-                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              <h1 className='text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent'>
                 골격진단 결과
               </h1>
-              <p className="text-xl text-gray-600">당신의 골격 타입이 분석되었습니다</p>
-              <div className="mt-4 text-sm text-gray-500">Style Me - 개인 맞춤 스타일링 서비스</div>
+              <p className='text-xl text-gray-600'>당신의 골격 타입이 분석되었습니다</p>
+              <div className='mt-4 text-sm text-gray-500'>Style Me - 개인 맞춤 스타일링 서비스</div>
             </div>
 
             {/* Result Overview */}
-            <Card className="mb-8 border-0 shadow-xl bg-gradient-to-r from-white to-pink-50 mx-4 page-break-avoid">
-              <CardContent className="p-8">
-                <div className="text-center">
-                  <h2 className="text-3xl font-bold text-gray-800 mb-6">{result.body_type}</h2>
-                  <div className="text-left max-w-4xl mx-auto">
-                    <div className="prose prose-lg text-gray-600 leading-relaxed">
-                      {result.type_description.split("\n").map((paragraph, index) => (
-                        <p key={index} className="mb-4">
+            <Card className='mb-8 border-0 shadow-xl bg-gradient-to-r from-white to-pink-50 mx-4 page-break-avoid'>
+              <CardContent className='p-8'>
+                <div className='text-center'>
+                  <h2 className='text-3xl font-bold text-gray-800 mb-6'>{result.body_type}</h2>
+                  <div className='text-left max-w-4xl mx-auto'>
+                    <div className='prose prose-lg text-gray-600 leading-relaxed'>
+                      {result.type_description.split('\n').map((paragraph, index) => (
+                        <p key={index} className='mb-4'>
                           {paragraph}
                         </p>
                       ))}
@@ -440,17 +424,17 @@ export default function ResultPage() {
             </Card>
 
             {/* Characteristics */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <Sparkles className="h-6 w-6 mr-2 text-pink-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <Sparkles className='h-6 w-6 mr-2 text-pink-500' />
                   상세 체형 특징
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.detailed_features.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.detailed_features.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -459,17 +443,17 @@ export default function ResultPage() {
             </Card>
 
             {/* 매력 포인트 */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <Heart className="h-6 w-6 mr-2 text-rose-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <Heart className='h-6 w-6 mr-2 text-rose-500' />
                   매력 포인트
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.attraction_points.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.attraction_points.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -478,17 +462,17 @@ export default function ResultPage() {
             </Card>
 
             {/* 추천 스타일 */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-before page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-before page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <Shirt className="h-6 w-6 mr-2 text-green-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <Shirt className='h-6 w-6 mr-2 text-green-500' />
                   추천 스타일 & 아이템
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.recommended_styles.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.recommended_styles.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -497,17 +481,17 @@ export default function ResultPage() {
             </Card>
 
             {/* 피해야 할 스타일 */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <X className="h-6 w-6 mr-2 text-red-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <X className='h-6 w-6 mr-2 text-red-500' />
                   피해야 할 스타일
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.avoid_styles.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.avoid_styles.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -516,17 +500,17 @@ export default function ResultPage() {
             </Card>
 
             {/* 보완 포인트 */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <Sparkles className="h-6 w-6 mr-2 text-purple-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <Sparkles className='h-6 w-6 mr-2 text-purple-500' />
                   보완 포인트
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.styling_fixes.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.styling_fixes.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -535,17 +519,17 @@ export default function ResultPage() {
             </Card>
 
             {/* 스타일링 팁 */}
-            <Card className="mb-8 border-0 shadow-lg mx-4 page-break-avoid">
+            <Card className='mb-8 border-0 shadow-lg mx-4 page-break-avoid'>
               <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-gray-800">
-                  <Star className="h-6 w-6 mr-2 text-yellow-500" />
+                <CardTitle className='flex items-center text-2xl text-gray-800'>
+                  <Star className='h-6 w-6 mr-2 text-yellow-500' />
                   스타일링 팁
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-lg text-gray-700 leading-relaxed">
-                  {result.styling_tips.split("\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
+                <div className='prose prose-lg text-gray-700 leading-relaxed'>
+                  {result.styling_tips.split('\n').map((paragraph, index) => (
+                    <p key={index} className='mb-4'>
                       {paragraph}
                     </p>
                   ))}
@@ -554,28 +538,34 @@ export default function ResultPage() {
             </Card>
 
             {/* Footer */}
-            <div className="text-center py-8 text-gray-500 text-sm">
+            <div className='text-center py-8 text-gray-500 text-sm'>
               <p>© 2024 Style Me - 개인 맞춤 스타일링 서비스</p>
-              <p className="mt-2">생성일: {new Date().toLocaleDateString("ko-KR")}</p>
+              <p className='mt-2'>생성일: {new Date().toLocaleDateString('ko-KR')}</p>
             </div>
           </div>
 
-          <Card className="mb-8 border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100" data-hide-in-pdf>
-            <CardContent className="p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">💡 카카오톡 채널 안내</h3>
-              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-6">
-                <div className="text-left space-y-3 text-gray-700">
-                  <p className="font-semibold text-black-800">📱 분석된 체형 타입 기반으로, 스타일링 상담을 받고 싶으시다면 카카오톡 채널로 편하게 연락주세요 :) </p>
+          <Card
+            className='mb-8 border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100'
+            data-hide-in-pdf
+          >
+            <CardContent className='p-8 text-center'>
+              <h3 className='text-xl font-bold text-gray-800 mb-4'>💡 카카오톡 채널 안내</h3>
+              <div className='bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-6'>
+                <div className='text-left space-y-3 text-gray-700'>
+                  <p className='font-semibold text-black-800'>
+                    📱 분석된 체형 타입 기반으로, 스타일링 상담을 받고 싶으시다면 카카오톡 채널로
+                    편하게 연락주세요 :){' '}
+                  </p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <div className="flex items-center cursor-pointer">
+              <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                <div className='flex items-center cursor-pointer'>
                   <Button
-                    variant="outline"
-                    onClick={() => window.open("https://pf.kakao.com/_ZXxedn", "_blank")}
-                    className="border-2 border-yellow-400 text-gray-600 hover:bg-gray-50 px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-transparent cursor-pointer"
+                    variant='outline'
+                    onClick={() => window.open('https://pf.kakao.com/_ZXxedn', '_blank')}
+                    className='border-2 border-yellow-400 text-gray-600 hover:bg-gray-50 px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-transparent cursor-pointer'
                   >
-                    <MessageCircle className="h-5 w-5 mr-2 " />
+                    <MessageCircle className='h-5 w-5 mr-2 ' />
                     카카오톡 채널로 가기
                   </Button>
                 </div>
@@ -584,50 +574,53 @@ export default function ResultPage() {
           </Card>
 
           {/* Additional Actions - PDF에서 제외 */}
-          <Card className="mb-8 border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100" data-hide-in-pdf>
-            <CardContent className="p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">💡 PDF 다운로드 안내</h3>
-              <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
-                <div className="text-left space-y-3 text-gray-700">
-                  <p className="font-semibold text-blue-800">📱 브라우저별 PDF 저장 방법:</p>
-                  <div className="grid md:grid-cols-3 gap-4 text-sm">
-                    <div className="bg-white p-4 rounded-lg border">
-                      <p className="font-bold text-blue-600 mb-2">Chrome</p>
+          <Card
+            className='mb-8 border-0 shadow-lg bg-gradient-to-r from-gray-50 to-gray-100'
+            data-hide-in-pdf
+          >
+            <CardContent className='p-8 text-center'>
+              <h3 className='text-xl font-bold text-gray-800 mb-4'>💡 PDF 다운로드 안내</h3>
+              <div className='bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-6'>
+                <div className='text-left space-y-3 text-gray-700'>
+                  <p className='font-semibold text-blue-800'>📱 브라우저별 PDF 저장 방법:</p>
+                  <div className='grid md:grid-cols-3 gap-4 text-sm'>
+                    <div className='bg-white p-4 rounded-lg border'>
+                      <p className='font-bold text-blue-600 mb-2'>Chrome</p>
                       <p>대상 → PDF로 저장 선택</p>
                     </div>
-                    <div className="bg-white p-4 rounded-lg border">
-                      <p className="font-bold text-orange-600 mb-2">Safari</p>
+                    <div className='bg-white p-4 rounded-lg border'>
+                      <p className='font-bold text-orange-600 mb-2'>Safari</p>
                       <p>하단 PDF 버튼 클릭</p>
                     </div>
-                    <div className="bg-white p-4 rounded-lg border">
-                      <p className="font-bold text-purple-600 mb-2">Firefox</p>
+                    <div className='bg-white p-4 rounded-lg border'>
+                      <p className='font-bold text-purple-600 mb-2'>Firefox</p>
                       <p>대상 → PDF로 저장 선택</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className='flex flex-col sm:flex-row gap-4 justify-center'>
                 <Button
                   onClick={generatePDF}
                   disabled={isGeneratingPDF}
-                  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                  className='bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300'
                 >
                   {isGeneratingPDF ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className='flex items-center'>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
                       준비 중...
                     </div>
                   ) : (
                     <>
-                      <Printer className="h-4 w-4 mr-2" />
+                      <Printer className='h-4 w-4 mr-2' />
                       PDF 다운로드
                     </>
                   )}
                 </Button>
-                <Link href="/survey">
+                <Link href='/survey'>
                   <Button
-                    variant="outline"
-                    className="border-2 border-gray-400 text-gray-600 hover:bg-gray-50 px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-transparent"
+                    variant='outline'
+                    className='border-2 border-gray-400 text-gray-600 hover:bg-gray-50 px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-transparent'
                   >
                     다시 진단하기
                   </Button>
