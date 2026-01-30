@@ -1,10 +1,29 @@
 ---
 name: Custom issue template
 about: Describe this issue template's purpose here.
-title: ''
+title: "[feat]"
 labels: ''
-assignees: ''
+assignees: Tnalxmsk
 
 ---
 
+## Goal
 
+What are we trying to achieve and why?
+
+## Scope
+
+What is in scope and what is out of scope?
+
+## Tasks
+
+- [ ]
+- [ ]
+
+## Acceptance Criteria
+
+How will we know this is done?
+
+## Notes / Context
+
+Links, constraints, or additional background.
