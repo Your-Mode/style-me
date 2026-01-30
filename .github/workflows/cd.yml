@@ -1,0 +1,79 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+concurrency:
+  group: cd-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request') }}
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Extract PR info
+        id: pr_info
+        if: github.event.workflow_run.event == 'pull_request'
+        run: |
+          python - <<'PY'
+          import json, os
+          with open(os.environ["GITHUB_EVENT_PATH"], "r", encoding="utf-8") as f:
+            event = json.load(f)
+          prs = event.get("workflow_run", {}).get("pull_requests", [])
+          pr = prs[0] if prs else {}
+          base_ref = (pr.get("base") or {}).get("ref", "")
+          fork = ((pr.get("head") or {}).get("repo") or {}).get("fork", False)
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+            out.write(f"base_ref={base_ref}\n")
+            out.write(f"fork={'true' if fork else 'false'}\n")
+          PY
+
+      - name: Vercel pull (Preview)
+        if: github.event.workflow_run.event == 'pull_request' && (steps.pr_info.outputs.base_ref == 'develop' || steps.pr_info.outputs.base_ref == 'main') && steps.pr_info.outputs.fork == 'false'
+        run: pnpm dlx vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+
+      - name: Vercel build (Preview)
+        if: github.event.workflow_run.event == 'pull_request' && (steps.pr_info.outputs.base_ref == 'develop' || steps.pr_info.outputs.base_ref == 'main') && steps.pr_info.outputs.fork == 'false'
+        run: pnpm dlx vercel build --token $VERCEL_TOKEN
+
+      - name: Vercel deploy (Preview)
+        if: github.event.workflow_run.event == 'pull_request' && (steps.pr_info.outputs.base_ref == 'develop' || steps.pr_info.outputs.base_ref == 'main') && steps.pr_info.outputs.fork == 'false'
+        run: pnpm dlx vercel deploy --prebuilt --token $VERCEL_TOKEN
+
+      - name: Vercel pull (Production)
+        if: github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+        run: pnpm dlx vercel pull --yes --environment=production --token $VERCEL_TOKEN
+
+      - name: Vercel build (Production)
+        if: github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+        run: pnpm dlx vercel build --prod --token $VERCEL_TOKEN
+
+      - name: Vercel deploy (Production)
+        if: github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+        run: pnpm dlx vercel deploy --prebuilt --prod --token $VERCEL_TOKEN
