@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/apis/axios-instance";
+import { kyInstance } from "@/apis/ky-instance";
 import { addDoc, collection } from "@firebase/firestore";
 import { db } from "@/firebase";
 
@@ -22,10 +22,13 @@ export interface ChatResponse {
 
 export const chat = async (req: ChatRequest): Promise<ChatResponse> => {
   try {
-    const res = await axiosInstance.post<ChatResponse>("/assistant/chat", req, {
-      timeout: 50000,
-    });
-    return res.data;
+    const res = await kyInstance
+      .post("/assistant/chat", {
+        json: req,
+        timeout: 50000,
+      })
+      .json<ChatResponse>();
+    return res;
   } catch ( error ) {
     console.error(error, "Failed to fetch chat response");
     throw error;
@@ -65,16 +68,19 @@ export interface BodyResultResponse {
 
 export const postBodyResult = async (req: BodyResultRequest) => {
   try {
-    const response = await axiosInstance.post<BodyResultResponse>("/assistant/body-result", req, {
-      timeout: 28000,
-    });
+    const response = await kyInstance
+      .post("/assistant/body-result", {
+        json: req,
+        timeout: 28000,
+      })
+      .json<BodyResultResponse>();
     const colRef = collection(db, 'body_result');
     const newReq = {
       ...req,
       createdAt: new Date().toLocaleString().toString(),
     };
     await addDoc(colRef, newReq);
-    return response.data;
+    return response;
   } catch ( error ) {
     console.error("Failed to post body result:", error);
     throw error;
