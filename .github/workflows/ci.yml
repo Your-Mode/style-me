@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        id: lint
+        run: pnpm lint
+
+      - name: Build
+        id: build
+        run: pnpm build
+
+      - name: CI Summary
+        if: failure()
+        run: |
+          lint_result="${{ steps.lint.outcome }}"
+          build_result="${{ steps.build.outcome }}"
+
+          lint_message="린트 통과 ✅"
+          build_message="빌드 성공 ✅"
+
+          if [ "$lint_result" == "failure" ]; then
+            lint_message="린트 실패 ❌"
+          elif [ "$lint_result" == "skipped" ]; then
+            lint_message="린트 스킵 ⏭️"
+          fi
+
+          if [ "$build_result" == "failure" ]; then
+            build_message="빌드 실패 ❌"
+          elif [ "$build_result" == "skipped" ]; then
+            build_message="빌드 스킵 ⏭️ (이전 단계 실패)"
+          fi
+
+          {
+            echo "### CI 요약"
+            echo "- $lint_message"
+            echo "- $build_message"
+          } >> $GITHUB_STEP_SUMMARY
