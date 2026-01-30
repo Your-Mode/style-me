@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   pull_request:
@@ -23,8 +23,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.28.2
 
       - name: Setup Node cache
         uses: actions/setup-node@v4
@@ -49,23 +47,23 @@ jobs:
           lint_result="${{ steps.lint.outcome }}"
           build_result="${{ steps.build.outcome }}"
 
-          lint_message="린트 통과 ✅"
-          build_message="빌드 성공 ✅"
+          lint_message="Lint passed ✅"
+          build_message="Build passed ✅"
 
           if [ "$lint_result" == "failure" ]; then
-            lint_message="린트 실패 ❌"
+            lint_message="Lint failed ❌"
           elif [ "$lint_result" == "skipped" ]; then
-            lint_message="린트 스킵 ⏭️"
+            lint_message="Lint skipped ⏭️"
           fi
 
           if [ "$build_result" == "failure" ]; then
-            build_message="빌드 실패 ❌"
+            build_message="Build failed ❌"
           elif [ "$build_result" == "skipped" ]; then
-            build_message="빌드 스킵 ⏭️ (이전 단계 실패)"
+            build_message="Build skipped ⏭️ (previous step failed)"
           fi
 
           {
-            echo "### CI 요약"
+            echo "### CI Summary"
             echo "- $lint_message"
             echo "- $build_message"
           } >> $GITHUB_STEP_SUMMARY
