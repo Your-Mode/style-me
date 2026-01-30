@@ -35,11 +35,11 @@ jobs:
 
       - name: Lint
         id: lint
-        run: pnpm lint
+        run: pnpm run lint
 
       - name: Build
         id: build
-        run: pnpm build
+        run: pnpm run build
 
       - name: CI Summary
         if: failure()
