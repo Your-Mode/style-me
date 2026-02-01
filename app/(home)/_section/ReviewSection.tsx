@@ -1,14 +1,12 @@
 import { Card, CardContent } from '@/components/ui/card';
+import SectionHeader from '@/components/common/section-header/section-header';
 import { Star } from 'lucide-react';
 
 export default function ReviewSection() {
   return (
     <section id='reviews' className='py-20 px-6 bg-gradient-to-br from-purple-50 to-pink-50'>
       <div className='container mx-auto'>
-        <div className='text-center mb-16'>
-          <h2 className='text-4xl font-bold text-gray-800 mb-6'>고객 후기</h2>
-          <p className='text-xl text-gray-600 font-light'>5,000명 이상이 경험한 스타일 변화</p>
-        </div>
+        <SectionHeader title='고객 후기' subtitle='5,000명 이상이 경험한 스타일 변화' />
 
         <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
           {[

@@ -8,6 +8,7 @@ import ActionButtons from '@/app/result/_section/ActionButtons';
 import ResultContent from '@/app/result/_section/ResultContent';
 import KakaoSection from '@/app/result/_section/KakaoSection';
 import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
+import PageContainer from '@/components/common/page-container/page-container';
 
 export default function ResultClient() {
   const [isLoading, setIsLoading] = useState(true);
@@ -179,7 +180,9 @@ export default function ResultClient() {
       if (resultRef.current) {
         resultRef.current.classList.add('print-content');
 
-        const gradientElements = resultRef.current.querySelectorAll('.bg-gradient-to-r, .bg-gradient-to-br');
+        const gradientElements = resultRef.current.querySelectorAll(
+          '.bg-gradient-to-r, .bg-gradient-to-br',
+        );
         gradientElements.forEach((el) => {
           if (el.textContent?.includes('골격진단') || el.classList.contains('from-pink-500')) {
             el.classList.add('print-gradient-pink');
@@ -215,7 +218,10 @@ export default function ResultClient() {
         const icons = resultRef.current.querySelectorAll('svg');
         icons.forEach((icon) => {
           const parent = icon.closest('.flex');
-          if (parent?.textContent?.includes('상세 체형') || parent?.textContent?.includes('골격진단')) {
+          if (
+            parent?.textContent?.includes('상세 체형') ||
+            parent?.textContent?.includes('골격진단')
+          ) {
             icon.classList.add('print-icon-pink');
           } else if (parent?.textContent?.includes('보완')) {
             icon.classList.add('print-icon-purple');
@@ -256,7 +262,9 @@ export default function ResultClient() {
               if (el.className && typeof el.className === 'string') {
                 el.className = el.className.replace(/print-[a-z-]+/g, '').trim();
               } else if (el.classList) {
-                const classesToRemove = Array.from(el.classList).filter((cls) => cls.startsWith('print-'));
+                const classesToRemove = Array.from(el.classList).filter((cls) =>
+                  cls.startsWith('print-'),
+                );
                 classesToRemove.forEach((cls) => el.classList.remove(cls));
               }
             } catch (error) {
@@ -276,9 +284,9 @@ export default function ResultClient() {
   if (isLoading) {
     return (
       <div className='py-8 px-4'>
-        <div className='container mx-auto max-w-6xl'>
+        <PageContainer className='max-w-6xl'>
           <LoadingState />
-        </div>
+        </PageContainer>
       </div>
     );
   }
@@ -286,21 +294,21 @@ export default function ResultClient() {
   if (!result) {
     return (
       <div className='py-8 px-4'>
-        <div className='container mx-auto max-w-6xl'>
+        <PageContainer className='max-w-6xl'>
           <EmptyState />
-        </div>
+        </PageContainer>
       </div>
     );
   }
 
   return (
     <div className='py-8 px-4'>
-      <div className='container mx-auto max-w-6xl'>
+      <PageContainer className='max-w-6xl'>
         <ActionButtons isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
         <ResultContent result={result} resultRef={resultRef} />
         <KakaoSection onOpenKakao={() => window.open('https://pf.kakao.com/_ZXxedn', '_blank')} />
         <PdfGuideSection isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
-      </div>
+      </PageContainer>
     </div>
   );
 }

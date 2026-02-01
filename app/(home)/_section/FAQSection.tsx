@@ -5,15 +5,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Clock, Shield } from 'lucide-react';
+import SectionHeader from '@/components/common/section-header/section-header';
 
 export default function FAQSection() {
   return (
     <section id='faq' className='py-20 px-6 bg-white/70 backdrop-blur-sm'>
       <div className='container mx-auto max-w-4xl'>
-        <div className='text-center mb-16'>
-          <h2 className='text-4xl font-bold text-gray-800 mb-6'>자주 묻는 질문</h2>
-          <p className='text-xl text-gray-600 font-light'>궁금한 점들을 미리 확인해보세요</p>
-        </div>
+        <SectionHeader title='자주 묻는 질문' subtitle='궁금한 점들을 미리 확인해보세요' />
 
         <Accordion type='single' collapsible className='space-y-6'>
           <AccordionItem
