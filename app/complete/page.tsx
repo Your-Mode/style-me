@@ -5,21 +5,23 @@ import NextSteps from '@/app/complete/_section/NextSteps';
 import ServiceDetails from '@/app/complete/_section/ServiceDetails';
 import KakaoChannel from '@/app/complete/_section/KakaoChannel';
 import ContactInfo from '@/app/complete/_section/ContactInfo';
+import PageBackground from '@/components/common/page-background/page-background';
+import PageContainer from '@/components/common/page-container/page-container';
 
 export default function CompletePage() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50'>
+    <PageBackground className='bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50'>
       <Header />
       <div className='py-8 px-4'>
-        <div className='container mx-auto max-w-4xl'>
+        <PageContainer className='max-w-4xl'>
           <SuccessHeader />
           <OrderSummaryClient />
           <NextSteps />
           <ServiceDetails />
           <KakaoChannel />
           <ContactInfo />
-        </div>
+        </PageContainer>
       </div>
-    </div>
+    </PageBackground>
   );
 }
