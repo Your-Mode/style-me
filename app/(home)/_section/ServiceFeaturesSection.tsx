@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import SectionHeader from '@/components/common/section-header/section-header';
 
 export default function ServiceFeaturesSection() {
   return (
     <section id='service' className='py-20 px-6 bg-white/70 backdrop-blur-sm'>
       <div className='container mx-auto'>
-        <div className='text-center mb-16'>
-          <h2 className='text-4xl font-bold mb-6 text-gray-800'>스타일링 서비스</h2>
-          <p className='text-xl text-gray-600 font-light max-w-2xl mx-auto'>
-            AI 기술과 전문 스타일리스트의 노하우가 만나 당신만의 완벽한 스타일을 완성합니다
-          </p>
-        </div>
+        <SectionHeader
+          title='스타일링 서비스'
+          subtitle='AI 기술과 전문 스타일리스트의 노하우가 만나 당신만의 완벽한 스타일을 완성합니다'
+          subtitleClassName='max-w-2xl mx-auto'
+        />
 
         <div className='max-w-4xl mx-auto'>
           <Card className='border-2 border-rose-200 bg-gradient-to-br from-white to-rose-50/50 shadow-xl'>
