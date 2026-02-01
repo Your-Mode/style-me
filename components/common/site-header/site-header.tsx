@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import BrandMark from '@/components/common/brand-mark';
+import BrandMark from '@/components/common/brand-mark/brand-mark';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
