@@ -5,10 +5,11 @@ import ReviewSection from '@/app/(home)/_section/ReviewSection';
 import FAQSection from '@/app/(home)/_section/FAQSection';
 import CTASection from '@/app/(home)/_section/CTASection';
 import FloatingButton from '@/app/(home)/components/floating-button/FloatingButton';
+import PageBackground from '@/components/common/page-background/page-background';
 
 export default function HomePage() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50'>
+    <PageBackground className='bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50'>
       <Header />
       <HeroSection />
       <ServiceFeaturesSection />
@@ -16,6 +17,6 @@ export default function HomePage() {
       <FAQSection />
       <CTASection />
       <FloatingButton />
-    </div>
+    </PageBackground>
   );
 }
