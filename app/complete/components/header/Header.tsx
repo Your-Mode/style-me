@@ -1,4 +1,4 @@
-import SiteHeader from '@/components/common/site-header';
+import SiteHeader from '@/components/common/site-header/site-header';
 
 export default function Header() {
   const navItems = [
