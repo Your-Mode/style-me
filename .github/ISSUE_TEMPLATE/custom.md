@@ -1,29 +1,29 @@
-﻿---
-name: Feature Request
-about: Suggest an idea or improvement for the project.
-title: 'feat: '
-labels: ['feature']
-assignees: []
+---
+name: Custom issue template
+about: Describe this issue template's purpose here.
+title: "[feat]"
+labels: ''
+assignees: Tnalxmsk
+
 ---
 
-## Problem
+## Goal
 
-What problem are you trying to solve?
+What are we trying to achieve and why?
 
-## Proposed Solution
+## Scope
 
-Describe the solution you want.
+What is in scope and what is out of scope?
 
-## Alternatives Considered
+## Tasks
 
-What other approaches did you consider?
+- [ ]
+- [ ]
 
-## API / Usage Example (if applicable)
+## Acceptance Criteria
 
-```ts
-// Example usage here
-```
+How will we know this is done?
 
-## Additional Context
+## Notes / Context
 
-Anything else we should know?
+Links, constraints, or additional background.

@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { analytics } from "@/firebase";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { logEvent } from "@firebase/analytics";
+import { analytics } from '@/firebase';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { logEvent } from 'firebase/analytics';
 
 export default function AnalyticsListener() {
   const pathname = usePathname();

@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
 import {
   collection,
   doc,
@@ -7,11 +7,11 @@ import {
   getFirestore,
   query,
   setDoc,
+  serverTimestamp,
   where,
-} from "@firebase/firestore";
-import { BodyDiagnosisFormData } from "@/types/body";
-import { serverTimestamp } from "@firebase/database";
-import { getAnalytics, isSupported } from "@firebase/analytics";
+} from 'firebase/firestore';
+import { BodyDiagnosisFormData } from '@/types/body';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,14 +27,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 export let analytics: ReturnType<typeof getAnalytics> | null = null;
 if (typeof window !== 'undefined') {
-  isSupported().then(supported => {
+  isSupported().then((supported) => {
     if (supported) analytics = getAnalytics(app);
   });
 }
@@ -75,11 +74,15 @@ const assertPhoneId = (raw: string) => {
 export async function saveSurveyAnswers(phone: string, answers: string[]): Promise<string> {
   const phoneId = assertPhoneId(phone);
   const ref = doc(db, 'surveys', phoneId);
-  await setDoc(ref, {
-    phone: phoneId,
-    answers,
-    completedAt: serverTimestamp(),
-  }, { merge: true }); // 필요시 덮어쓰기 허용
+  await setDoc(
+    ref,
+    {
+      phone: phoneId,
+      answers,
+      completedAt: serverTimestamp(),
+    },
+    { merge: true },
+  ); // 필요시 덮어쓰기 허용
   return ref.id;
   /*try {
     const docRef = await addDoc(collection(db, "surveys"), {
@@ -115,20 +118,20 @@ export async function saveSurveyAnswers(phone: string, answers: string[]): Promi
 
 export async function valueExists(collectionName: string, phone: string): Promise<boolean> {
   const phoneId = assertPhoneId(phone);
-  console.log(phoneId)
+  console.log(phoneId);
   const snap = await getDoc(doc(db, collectionName, phoneId));
-  console.log(phoneId, snap)
+  console.log(phoneId, snap);
   return snap.exists();
 }
 
 export async function getApplyUserInfo(phone: string) {
   const colRef = collection(db, 'apply');
-  const q = query(colRef, where('phone', '==', phone.replace("-", "")));
+  const q = query(colRef, where('phone', '==', phone.replace('-', '')));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
     return null;
   }
 
-  return snapshot.docs[0].data()
+  return snapshot.docs[0].data();
 }
