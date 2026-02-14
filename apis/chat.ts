@@ -23,7 +23,7 @@ export interface ChatResponse {
 export const chat = async (req: ChatRequest): Promise<ChatResponse> => {
   try {
     const res = await kyInstance
-      .post('/assistant/chat', {
+      .post('assistant/chat', {
         json: req,
         timeout: 50000,
       })
@@ -69,7 +69,7 @@ export interface BodyResultResponse {
 export const postBodyResult = async (req: BodyResultRequest) => {
   try {
     const response = await kyInstance
-      .post('/assistant/body-result', {
+      .post('assistant/body-result', {
         json: req,
         timeout: 28000,
       })
