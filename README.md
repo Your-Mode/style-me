@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Style Me
 
-## Getting Started
+AI 기반 골격 진단으로 개인 맞춤 스타일을 제안하는 스타일링 앱입니다.
 
-First, run the development server:
+## 제품 개요
+
+Style Me는 간단한 신청과 설문을 통해 사용자의 체형 결과를 도출하고, 바로 인쇄 가능한 PDF 리포트를 제공합니다.
+
+## 핵심 플로우
+
+1. Home
+2. Apply
+3. Complete
+4. Survey
+5. Result
+
+## 기술 스택
+
+- Next.js (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Tanstack Query + Zustand
+- Firebase
+- Sentry
+
+## 시작하기
+
+### 설치
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 개발 서버 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 빌드 / 실행
 
-## Learn More
+```bash
+pnpm build
+pnpm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 린트
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm lint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Sentry
 
-## Deploy on Vercel
+클라이언트/서버/엣지 에러 모니터링을 위해 Sentry를 사용합니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 클라이언트 초기화: `sentry.client.config.ts`
+- 서버 초기화: `sentry.server.config.ts`
+- 엣지 초기화: `sentry.edge.config.ts`
+- 요청 에러 캡처: `instrumentation.ts`
+- 라우터 전환 추적: `instrumentation-client.ts`

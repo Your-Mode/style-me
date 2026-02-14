@@ -1,52 +1,9 @@
-# AGENTS.md
-
-## Project Overview
-
-- App: "Style Me" (Next.js App Router)
-- Core flow: Home -> Apply -> Complete -> Survey -> Result
-- State: React Query + Zustand (persist)
-- Backend: Axios calls to `/assistant/*` endpoints
-- Data: Firebase Firestore + Analytics
-
-## Repo Structure
-
-- app/: Next.js pages (App Router)
-  - page.tsx: landing
-  - apply/page.tsx: application form
-  - complete/page.tsx: post-apply confirmation
-  - survey/page.tsx: chat-based survey
-  - result/page.tsx: body-type result + PDF print
-- components/: UI + shared behavior (AuthGuard, AnalyticsListener)
-  - common/: reusable layout + UI patterns
-    - <name>/<name>.tsx: colocated component (prepare for stories)
-- apis/: ky instance + chat/result APIs
-- hooks/: React Query + Zustand stores
-- lib/: providers + survey data + utils
-- firebase.ts: Firebase init + Firestore helpers
-
-## How to Run
-
-- Install deps: `pnpm install`
-- Dev: `pnpm dev`
-- Build: `pnpm build`
-- Start: `pnpm start`
-- Lint: `pnpm lint`
-
-## Environment Variables
-
-- NEXT_PUBLIC_API_URL
-- NEXT_PUBLIC_FIREBASE_API_KEY
-- NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-- NEXT_PUBLIC_FIREBASE_PROJECT_ID
-- NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-- NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-- NEXT_PUBLIC_FIREBASE_APP_ID
-- NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-
-## Code Quality Principles
+# Code Quality Guide
 
 좋은 프론트엔드 코드는 **변경하기 쉬운 코드**다.  
 새 요구사항을 구현할 때 기존 코드를 빠르게 이해하고, 안전하게 수정하고, 예측 가능한 범위로 배포할 수 있어야 한다.
+
+## 4가지 기준
 
 ### 1) 가독성 (Readability)
 
@@ -91,16 +48,6 @@
 - 함께 수정되지 않으면 오류 위험이 큰 경우: **응집도 우선** (공통화/추상화).
 - 위험이 낮고 이해 비용이 큰 경우: **가독성 우선** (중복 허용).
 - 결합도를 낮추기 위한 중복은 허용하되, 동기화 리스크가 커지면 응집도를 높이는 방향으로 재구성한다.
-
-## Development Rules (Project-specific)
-
-- Prefer App Router conventions (server/client components split)
-- Keep UI in `components/ui` for shared atoms
-- Place reusable patterns in `components/common/<name>/<name>.tsx`
-- Keep network calls in `apis/` and hook wrappers in `hooks/`
-- Use Zustand stores only for cross-page state; otherwise prefer local state
-- Avoid hardcoding API URLs; use `NEXT_PUBLIC_API_URL`
-- Keep Firestore access in `firebase.ts`
 
 ## PR / Review Checklist
 
@@ -477,17 +424,3 @@ function ItemEditModal({ open, items, recommendedItems, onConfirm, onClose }) {
 - 공통 Hook/컴포넌트 수정 후 확인해야 할 호출부가 과도하게 많은가?
 - 중간 전달용 props가 많아져 값 이름 변경 시 수정 범위가 넓어지는가?
 - Composition으로 해결 가능한 문제를 Context로 과하게 확장하지 않았는가?
-
-## Contribution Guide
-
-- Before editing, locate the owning page or hook
-- Keep styles consistent with existing Tailwind patterns
-- If you add new pages, update navigation links as needed
-- If you change survey flow, update `lib/survey-data.ts`
-- If you touch auth flow, check `components/auth-guard.tsx` and localStorage keys
-
-## Notes / Known Issues
-
-- UI text mentions 17 questions, but `lib/survey-data.ts` currently has 15
-- Auth token key mismatch: `AuthGuard` sets `authToken`, `SurveyPage` reads `aFfuthToken`
-- Photo upload is local preview only (no upload/storage)
