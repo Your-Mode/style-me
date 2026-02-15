@@ -1,15 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  getFirestore,
-  query,
-  setDoc,
-  serverTimestamp,
-  where,
-} from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
 import { BodyDiagnosisFormData } from '@/types/body';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 // TODO: Add SDKs for Firebase products that you want to use
@@ -41,19 +31,6 @@ if (typeof window !== 'undefined') {
 const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
 export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
-  /*try {
-    const colRef = collection(db, 'apply');
-    const newReq = {
-      ...req,
-      phone: req.phone.replace("-", ""),
-    };
-    await addDoc(colRef, {
-      ...newReq,
-      createdAt: new Date().toLocaleString().toString(),
-    });
-  } catch ( error ) {
-    console.error("Error adding document: ", error);
-  }*/
   const phoneId = normalizePhone(req.phone);
   const newReq = {
     ...req,
@@ -84,54 +61,10 @@ export async function saveSurveyAnswers(phone: string, answers: string[]): Promi
     { merge: true },
   ); // 필요시 덮어쓰기 허용
   return ref.id;
-  /*try {
-    const docRef = await addDoc(collection(db, "surveys"), {
-      userId,
-      phone,
-      answers,
-      completedAt: serverTimestamp(),
-    });
-
-    // 사용자의 설문 완료 상태 업데이트
-    await updateDoc(doc(db, "users", userId), {
-      surveyCompleted: true,
-      lastAccessAt: serverTimestamp(),
-    });
-
-    return docRef.id;
-  } catch ( error ) {
-    console.error("설문 답변 저장 오류:", error);
-    throw new Error("설문 답변 저장에 실패했습니다.");
-  }*/
 }
-
-/*export async function valueExists(
-  collectionName: string,
-  fieldName: string,
-  value: string,
-): Promise<boolean> {
-  const colRef = collection(db, collectionName);
-  const q = query(colRef, where(fieldName, "==", value));
-  const snapshot = await getDocs(q);
-  return !snapshot.empty;
-}*/
 
 export async function valueExists(collectionName: string, phone: string): Promise<boolean> {
   const phoneId = assertPhoneId(phone);
-  console.log(phoneId);
   const snap = await getDoc(doc(db, collectionName, phoneId));
-  console.log(phoneId, snap);
   return snap.exists();
-}
-
-export async function getApplyUserInfo(phone: string) {
-  const colRef = collection(db, 'apply');
-  const q = query(colRef, where('phone', '==', phone.replace('-', '')));
-  const snapshot = await getDocs(q);
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  return snapshot.docs[0].data();
 }
