@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { postBodyResult } from '@/apis/chat';
 import { useBodyResultStore } from '@/hooks/useBodyResultStore';
+import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
 import LoadingState from '@/app/result/components/loading/LoadingState';
 import EmptyState from '@/app/result/components/empty/EmptyState';
 import ActionButtons from '@/app/result/_section/ActionButtons';
@@ -10,30 +13,49 @@ import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
 import PageContainer from '@/components/common/page-container/page-container';
 
 export default function ResultClient() {
-  const [isLoading, setIsLoading] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
-  const { bodyResult: result } = useBodyResultStore();
+  const { bodyResult: result, status, setBodyResult, setStatus } = useBodyResultStore();
+  const { gender, height, weight } = useApplyUserInfoStore();
+  const { mutateAsync: retryResultRequest, isPending: isRetrying } = useMutation({
+    mutationFn: postBodyResult,
+    retry: 3,
+    retryDelay: 2000,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      let answers: string[] = [];
-      try {
-        const raw = localStorage.getItem('surveyAnswers');
-        answers = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(answers)) answers = [];
-      } catch {
-        answers = [];
-      }
-      setIsLoading(false);
-    }, 3000);
+  const handleRetry = async () => {
+    let answers: string[] = [];
+    try {
+      const rawAnswers = localStorage.getItem('surveyAnswers');
+      const parsedAnswers = rawAnswers ? JSON.parse(rawAnswers) : [];
+      answers = Array.isArray(parsedAnswers) ? parsedAnswers : [];
+    } catch {
+      answers = [];
+    }
 
-    return () => clearTimeout(loadingTimer);
-  }, []);
+    if (!answers.length || !gender || height <= 0 || weight <= 0) {
+      alert('재요청에 필요한 설문 정보가 없습니다. 설문을 다시 진행해주세요.');
+      return;
+    }
+
+    setStatus('loading');
+    try {
+      const resultData = await retryResultRequest({
+        answers,
+        gender,
+        height,
+        weight,
+      });
+      setBodyResult(resultData);
+    } catch {
+      setStatus('error');
+      alert('결과 재요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
 
   const generatePDF = async () => {
     if (!result) return;
@@ -280,7 +302,7 @@ export default function ResultClient() {
     }
   };
 
-  if (isLoading) {
+  if (status === 'loading') {
     return (
       <div className='py-8 px-4'>
         <PageContainer className='max-w-6xl'>
@@ -290,11 +312,11 @@ export default function ResultClient() {
     );
   }
 
-  if (!result) {
+  if (status === 'error' || !result) {
     return (
       <div className='py-8 px-4'>
         <PageContainer className='max-w-6xl'>
-          <EmptyState />
+          <EmptyState onRetry={() => void handleRetry()} isRetrying={isRetrying} />
         </PageContainer>
       </div>
     );
