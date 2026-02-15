@@ -62,10 +62,6 @@ export default function ServiceDetails() {
               <Star className='h-4 w-4 text-yellow-500 mr-2' />
               <span>친구 추천 시 할인 혜택</span>
             </li>
-            <li className='flex items-center'>
-              <Star className='h-4 w-4 text-yellow-500 mr-2' />
-              <span>3개월 무료 카카오톡 상담</span>
-            </li>
           </ul>
         </CardContent>
       </Card>
