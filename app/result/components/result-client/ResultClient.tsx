@@ -6,7 +6,6 @@ import LoadingState from '@/app/result/components/loading/LoadingState';
 import EmptyState from '@/app/result/components/empty/EmptyState';
 import ActionButtons from '@/app/result/_section/ActionButtons';
 import ResultContent from '@/app/result/_section/ResultContent';
-import KakaoSection from '@/app/result/_section/KakaoSection';
 import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
 import PageContainer from '@/components/common/page-container/page-container';
 
@@ -306,7 +305,6 @@ export default function ResultClient() {
       <PageContainer className='max-w-6xl'>
         <ActionButtons isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
         <ResultContent result={result} resultRef={resultRef} />
-        <KakaoSection onOpenKakao={() => window.open('https://pf.kakao.com/_ZXxedn', '_blank')} />
         <PdfGuideSection isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
       </PageContainer>
     </div>
