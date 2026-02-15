@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import type { BodyResultRequest } from '@/apis/chat';
+import { useRouter } from 'next/navigation';
+import { postBodyResult } from '@/apis/chat';
+import { useMutation } from '@tanstack/react-query';
 import { saveSurveyAnswers } from '@/firebase';
 import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
-import { usePostResult } from '@/hooks/usePostResult';
+import { useBodyResultStore } from '@/hooks/useBodyResultStore';
 
 const AUTH_TOKEN_STORAGE_KEY = 'authToken';
 
@@ -20,15 +22,20 @@ function getPhoneFromAuthToken(): string | null {
 
 interface CompleteSurveyParams {
   answers: string[];
-  addBotMessage: (message: string) => void;
 }
 
 export function useSurveyCompletion() {
-  const { mutate: postResult } = usePostResult();
+  const router = useRouter();
   const { gender, height, weight } = useApplyUserInfoStore();
+  const { clearBodyResult, setBodyResult, setStatus } = useBodyResultStore();
+  const { mutateAsync: requestBodyResult } = useMutation({
+    mutationFn: postBodyResult,
+    retry: 3,
+    retryDelay: 2000,
+  });
 
   const completeSurvey = useCallback(
-    async ({ answers, addBotMessage }: CompleteSurveyParams) => {
+    async ({ answers }: CompleteSurveyParams) => {
       const tokenPhone = getPhoneFromAuthToken();
       if (tokenPhone) {
         try {
@@ -40,20 +47,26 @@ export function useSurveyCompletion() {
 
       localStorage.setItem('surveyAnswers', JSON.stringify(answers));
 
-      addBotMessage(
-        '모든 질문이 완료되었어요! 🎉\n\n지금 당신만의 완벽한 스타일을 분석하고 있어요. 조금만 기다려주세요... ✨\n\n📊 답변이 안전하게 저장되었습니다!',
-      );
+      clearBodyResult();
+      setStatus('loading');
+      router.push('/result');
 
-      const requestData: BodyResultRequest = {
+      const requestData = {
         answers,
         gender,
         height,
         weight,
       };
 
-      postResult(requestData);
+      try {
+        const result = await requestBodyResult(requestData);
+        setBodyResult(result);
+      } catch {
+        setStatus('error');
+        alert('결과 제출에 실패했습니다. 다시 시도해주세요.');
+      }
     },
-    [gender, height, postResult, weight],
+    [clearBodyResult, gender, height, requestBodyResult, router, setBodyResult, setStatus, weight],
   );
 
   return { completeSurvey };

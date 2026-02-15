@@ -1,32 +1,35 @@
-import { create } from "zustand/react";
-import { persist } from "zustand/middleware";
-import { BodyResultResponse } from "@/apis/chat";
+import { create } from 'zustand/react';
+import { persist } from 'zustand/middleware';
+import type { BodyResultResponse } from '@/apis/chat';
 
+export type BodyResultStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export interface UseBodyResultState {
-  bodyResult: BodyResultResponse,
+  bodyResult: BodyResultResponse | null;
+  status: BodyResultStatus;
   setBodyResult: (bodyResult: BodyResultResponse) => void;
+  clearBodyResult: () => void;
+  setStatus: (status: BodyResultStatus) => void;
 }
 
 export const useBodyResultStore = create<UseBodyResultState>()(
   persist(
     (set) => ({
-      bodyResult: {
-        body_type: "",
-        type_description: "",
-        detailed_features: "",
-        attraction_points: "",
-        recommended_styles: "",
-        avoid_styles: "",
-        styling_fixes: "",
-        styling_tips: "",
-      },
+      bodyResult: null,
+      status: 'idle',
       setBodyResult(bodyResult: BodyResultResponse) {
-        set({ bodyResult });
+        set({ bodyResult, status: 'success' });
+      },
+      clearBodyResult() {
+        set({ bodyResult: null });
+      },
+      setStatus(status: BodyResultStatus) {
+        set({ status });
       },
     }),
     {
-      name: "body-result-storage", // 저장될 key 이름
+      name: 'body-result-storage',
+      partialize: (state) => ({ bodyResult: state.bodyResult }),
     },
   ),
 );

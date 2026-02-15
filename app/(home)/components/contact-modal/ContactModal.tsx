@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, MessageCircle, Phone } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 type ContactModalProps = {
   isOpen?: boolean;
@@ -27,22 +27,8 @@ export default function ContactModal({ isOpen, setShowContact }: ContactModalPro
           <div className='space-y-4'>
             <div className='flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200'>
               <Mail className='h-6 w-6 text-rose-500 mr-4' />
-              <span className='text-gray-800'>urmode@naver.com</span>
+              <span className='text-gray-800'>yourmode0604@gmail.com</span>
             </div>
-            <div className='flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200'>
-              <Phone className='h-6 w-6 text-rose-500 mr-4' />
-              <span className='text-gray-800'>010-6415-1548</span>
-            </div>
-            <div
-              className='flex items-center p-4 bg-rose-50 rounded-xl border border-rose-200 cursor-pointer'
-              onClick={() => window.open('https://pf.kakao.com/_ZXxedn', '_blank')}
-            >
-              <MessageCircle className='h-6 w-6 text-rose-500 mr-4' />
-              <span className='text-gray-800'>카카오톡 채널로 가기</span>
-            </div>
-            <p className='text-sm text-gray-600 text-center'>
-              평일 09:00 - 18:00 (주말, 공휴일 휴무)
-            </p>
           </div>
         </CardContent>
       </Card>
