@@ -18,6 +18,8 @@ export function useSurveyChat() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastHandledResponseRef = useRef<ChatResponse | null>(null);
+  const currentQuestionRef = useRef(currentQuestion);
+  const answersRef = useRef(answers);
   const { completeSurvey } = useSurveyCompletion();
 
   const initialMessage = `안녕하세요! 당신만의 완벽한 스타일을 찾아드릴게요 ✨\n\n총 ${totalQuestions}개의 질문을 통해 당신의 골격 타입을 정확히 분석해드릴게요.\n\n옵션을 선택하거나 자유롭게 대화하듯 답변해주세요.\n\n첫 번째 질문입니다:\n${surveyQuestions[0].question}\n- ${surveyQuestions[0].options[0].label}\n- ${surveyQuestions[0].options[1].label}\n- ${surveyQuestions[0].options[2].label}\n`;
@@ -34,6 +36,14 @@ export function useSurveyChat() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    currentQuestionRef.current = currentQuestion;
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
   const handleChatResponse = useCallback(
     async (response: ChatResponse) => {
       setIsProcessing(true);
@@ -47,13 +57,15 @@ export function useSurveyChat() {
       }
 
       setLastResponseStatus('success');
-      const newAnswers = [...answers, response.selected];
+      const newAnswers = [...answersRef.current, response.selected];
+      answersRef.current = newAnswers;
       setAnswers(newAnswers);
 
-      if (currentQuestion < totalQuestions - 1) {
-        const nextIndex = currentQuestion + 1;
+      if (currentQuestionRef.current < totalQuestions - 1) {
+        const nextIndex = currentQuestionRef.current + 1;
 
         window.setTimeout(() => {
+          currentQuestionRef.current = nextIndex;
           setCurrentQuestion(nextIndex);
 
           const questionText = response.nextQuestion || surveyQuestions[nextIndex].question;
@@ -72,7 +84,7 @@ export function useSurveyChat() {
         setIsProcessing(false);
       }
     },
-    [addBotMessage, answers, completeSurvey, currentQuestion, totalQuestions],
+    [addBotMessage, completeSurvey, totalQuestions],
   );
 
   useEffect(() => {
