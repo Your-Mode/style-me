@@ -3,7 +3,6 @@ import SuccessHeader from '@/app/complete/_section/SuccessHeader';
 import OrderSummaryClient from '@/app/complete/_section/OrderSummaryClient';
 import NextSteps from '@/app/complete/_section/NextSteps';
 import ServiceDetails from '@/app/complete/_section/ServiceDetails';
-import KakaoChannel from '@/app/complete/_section/KakaoChannel';
 import ContactInfo from '@/app/complete/_section/ContactInfo';
 import PageBackground from '@/components/common/page-background/page-background';
 import PageContainer from '@/components/common/page-container/page-container';
@@ -18,7 +17,6 @@ export default function CompletePage() {
           <OrderSummaryClient />
           <NextSteps />
           <ServiceDetails />
-          <KakaoChannel />
           <ContactInfo />
         </PageContainer>
       </div>

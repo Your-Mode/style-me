@@ -55,27 +55,6 @@ export default function NextSteps() {
               </p>
             </div>
           </div>
-
-          <div className='flex items-start space-x-4'>
-            <div className='w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold text-sm'>
-              4
-            </div>
-            <div>
-              <h4 className='font-semibold text-gray-800 mb-2'>카카오톡 상담</h4>
-              <p className='text-gray-600 mb-3'>
-                추가 궁금한 점이나 개인 맞춤 조언이 필요하시면 카카오톡으로 편하게 상담받으세요. 런칭 기념으로 3개월간
-                무료 상담을 제공해드립니다!
-              </p>
-              <a href='https://pf.kakao.com/_ZXxedn' target='_blank' rel='noopener noreferrer'>
-                <Button variant='outline' className='border-yellow-400 text-yellow-600 hover:bg-yellow-50'>
-                  <div className='flex items-center'>
-                    <div className='w-4 h-4 bg-yellow-400 rounded mr-2'></div>
-                    카카오톡 상담
-                  </div>
-                </Button>
-              </a>
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>
