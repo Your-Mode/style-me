@@ -8,75 +8,25 @@ import { Camera, CreditCard, Smartphone, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Checkbox } from '@/components/ui/checkbox';
-import React, { useRef, useState } from 'react';
-import { applyBodyDiagnosis } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
-import { BodyDiagnosisFormData } from '@/types/body';
+import { FormField } from '@/components/ui/form-field';
+import { useApplicationFormState } from '@/app/apply/components/application-form/useApplicationFormState';
+import { useImagePreviewUpload } from '@/app/apply/components/application-form/useImagePreviewUpload';
+import { useApplicationSubmit } from '@/app/apply/components/application-form/useApplicationSubmit';
 
 export default function ApplicationForm() {
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { setGender, setHeight, setWeight } = useApplyUserInfoStore();
-  const [formData, setFormData] = useState<BodyDiagnosisFormData>({
-    name: '',
-    phone: '',
-    email: '',
-    gender: '',
-    height: '',
-    weight: '',
-    agreePrivacy: false,
-    agreeService: false,
-    paymentMethod: '',
+  const { formData, isFormValid, updateField } = useApplicationFormState();
+  const {
+    fileInputRef,
+    previewUrls,
+    uploadError,
+    handleImageUpload,
+    removeImage,
+    openImagePicker,
+  } = useImagePreviewUpload();
+  const { isSubmitting, submitError, handleSubmit } = useApplicationSubmit({
+    formData,
+    isFormValid,
   });
-
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length > 0) {
-      setUploadedImages((prev) => [...prev, ...files].slice(0, 3)); // 최대 3장
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const isFormValid = () => {
-    return (
-      formData.name &&
-      formData.phone &&
-      formData.email &&
-      formData.gender &&
-      formData.height &&
-      formData.weight &&
-      formData.agreePrivacy &&
-      formData.agreeService &&
-      formData.paymentMethod
-    );
-  };
-
-  const handleSubmit = async () => {
-    if (!isFormValid()) return;
-
-    setWeight(parseInt(formData.weight));
-    setHeight(parseInt(formData.height));
-    setGender(formData.gender);
-
-    setIsSubmitting(true);
-    await applyBodyDiagnosis(formData);
-    // 결제 시뮬레이션
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // 로컬 스토리지에 사용자 정보 저장
-    localStorage.setItem('userInfo', JSON.stringify(formData));
-    router.push('/complete');
-  };
 
   return (
     <div className='lg:col-span-2'>
@@ -87,45 +37,45 @@ export default function ApplicationForm() {
         <CardContent className='space-y-6'>
           {/* Personal Information */}
           <div className='grid md:grid-cols-2 gap-4'>
-            <div>
+            <FormField.Root>
               <Label htmlFor='name'>이름 *</Label>
               <Input
                 id='name'
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={(e) => updateField('name', e.target.value)}
                 placeholder='홍길동'
                 className='mt-1'
               />
-            </div>
-            <div>
+            </FormField.Root>
+            <FormField.Root>
               <Label htmlFor='phone'>연락처 *</Label>
               <Input
                 id='phone'
                 value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
+                onChange={(e) => updateField('phone', e.target.value)}
                 placeholder='010-1234-5678'
                 className='mt-1'
               />
-            </div>
+            </FormField.Root>
           </div>
 
-          <div>
+          <FormField.Root>
             <Label htmlFor='email'>이메일 *</Label>
             <Input
               id='email'
               type='email'
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={(e) => updateField('email', e.target.value)}
               placeholder='example@email.com'
               className='mt-1'
             />
-          </div>
+          </FormField.Root>
 
-          <div>
+          <FormField.Root>
             <Label>성별 *</Label>
             <RadioGroup
               value={formData.gender}
-              onValueChange={(value) => handleInputChange('gender', value)}
+              onValueChange={(value) => updateField('gender', value)}
               className='flex space-x-6 mt-2'
             >
               <div className='flex items-center space-x-2'>
@@ -137,45 +87,45 @@ export default function ApplicationForm() {
                 <Label htmlFor='male'>남성</Label>
               </div>
             </RadioGroup>
-          </div>
+          </FormField.Root>
 
           <div className='grid md:grid-cols-2 gap-4'>
-            <div>
+            <FormField.Root>
               <Label htmlFor='height'>키 (cm) *</Label>
               <Input
                 id='height'
                 value={formData.height}
-                onChange={(e) => handleInputChange('height', e.target.value)}
+                onChange={(e) => updateField('height', e.target.value)}
                 placeholder='165'
                 className='mt-1'
               />
-            </div>
-            <div>
+            </FormField.Root>
+            <FormField.Root>
               <Label htmlFor='weight'>몸무게 (kg) *</Label>
               <Input
                 id='weight'
                 value={formData.weight}
-                onChange={(e) => handleInputChange('weight', e.target.value)}
+                onChange={(e) => updateField('weight', e.target.value)}
                 placeholder='55'
                 className='mt-1'
               />
-            </div>
+            </FormField.Root>
           </div>
 
           {/* Photo Upload Section */}
-          <div className='space-y-4'>
-            <div>
+          <FormField.Root className='space-y-4'>
+            <FormField.Header>
               <Label>체형 사진 업로드 (선택사항)</Label>
-              <p className='text-sm text-gray-500 mt-1'>
+              <FormField.Description>
                 더 정확한 진단을 위해 전신 사진을 업로드해주세요. (최대 3장)
-              </p>
-            </div>
+              </FormField.Description>
+            </FormField.Header>
 
             <div className='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-pink-400 transition-colors'>
               <input
                 ref={fileInputRef}
                 type='file'
-                accept='image/*'
+                accept='image/jpeg,image/png'
                 multiple
                 onChange={handleImageUpload}
                 className='hidden'
@@ -185,7 +135,7 @@ export default function ApplicationForm() {
               <Button
                 type='button'
                 variant='outline'
-                onClick={() => fileInputRef.current?.click()}
+                onClick={openImagePicker}
                 className='bg-transparent'
               >
                 <Upload className='h-4 w-4 mr-2' />
@@ -194,15 +144,19 @@ export default function ApplicationForm() {
               <p className='text-xs text-gray-500 mt-2'>JPG, PNG 파일만 가능 (최대 5MB)</p>
             </div>
 
+            {uploadError && <p className='text-sm text-red-600'>{uploadError}</p>}
+
             {/* Uploaded Images Preview */}
-            {uploadedImages.length > 0 && (
+            {previewUrls.length > 0 && (
               <div className='grid grid-cols-3 gap-4'>
-                {uploadedImages.map((file, index) => (
+                {previewUrls.map((previewUrl, index) => (
                   <div key={index} className='relative'>
                     <Image
-                      src={URL.createObjectURL(file) || '/placeholder.svg'}
+                      src={previewUrl}
                       alt={`업로드된 이미지 ${index + 1}`}
                       className='w-full h-32 object-cover rounded-lg'
+                      width={128}
+                      height={128}
                     />
                     <Button
                       type='button'
@@ -217,17 +171,17 @@ export default function ApplicationForm() {
                 ))}
               </div>
             )}
-          </div>
+          </FormField.Root>
 
           {/* Privacy Agreement */}
           <div className='space-y-4 p-4 bg-gray-50 rounded-lg'>
             <h4 className='font-semibold text-gray-800'>개인정보 수집 및 이용 동의</h4>
             <div className='space-y-3'>
-              <div className='flex items-start space-x-2'>
+              <FormField.CheckItem>
                 <Checkbox
                   id='agreePrivacy'
                   checked={formData.agreePrivacy}
-                  onCheckedChange={(checked) => handleInputChange('agreePrivacy', checked)}
+                  onCheckedChange={(checked) => updateField('agreePrivacy', checked === true)}
                 />
                 <Label htmlFor='agreePrivacy' className='text-sm leading-relaxed'>
                   개인정보 수집 및 이용에 동의합니다. (필수)
@@ -237,17 +191,17 @@ export default function ApplicationForm() {
                     제공 / 보관기간: 서비스 완료 후 1년
                   </span>
                 </Label>
-              </div>
-              <div className='flex items-start space-x-2'>
+              </FormField.CheckItem>
+              <FormField.CheckItem>
                 <Checkbox
                   id='agreeService'
                   checked={formData.agreeService}
-                  onCheckedChange={(checked) => handleInputChange('agreeService', checked)}
+                  onCheckedChange={(checked) => updateField('agreeService', checked === true)}
                 />
                 <Label htmlFor='agreeService' className='text-sm'>
                   서비스 이용약관에 동의합니다. (필수)
                 </Label>
-              </div>
+              </FormField.CheckItem>
             </div>
           </div>
 
@@ -256,24 +210,24 @@ export default function ApplicationForm() {
             <Label>결제 수단 선택 *</Label>
             <RadioGroup
               value={formData.paymentMethod}
-              onValueChange={(value) => handleInputChange('paymentMethod', value)}
+              onValueChange={(value) => updateField('paymentMethod', value)}
               className='grid md:grid-cols-3 gap-4 mt-2'
             >
-              <div className='flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50'>
+              <FormField.OptionCard>
                 <RadioGroupItem value='card' id='card' />
                 <CreditCard className='h-5 w-5 text-gray-500' />
                 <Label htmlFor='card'>신용카드</Label>
-              </div>
-              <div className='flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50'>
+              </FormField.OptionCard>
+              <FormField.OptionCard>
                 <RadioGroupItem value='mobile' id='mobile' />
                 <Smartphone className='h-5 w-5 text-gray-500' />
                 <Label htmlFor='mobile'>휴대폰 결제</Label>
-              </div>
-              <div className='flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50'>
+              </FormField.OptionCard>
+              <FormField.OptionCard>
                 <RadioGroupItem value='kakao' id='kakao' />
                 <div className='w-5 h-5 bg-yellow-400 rounded'></div>
                 <Label htmlFor='kakao'>카카오페이</Label>
-              </div>
+              </FormField.OptionCard>
             </RadioGroup>
           </div>
 
@@ -281,7 +235,7 @@ export default function ApplicationForm() {
           <div className='pt-6'>
             <Button
               onClick={handleSubmit}
-              disabled={!isFormValid() || isSubmitting}
+              disabled={!isFormValid || isSubmitting}
               className='w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-4 text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300'
             >
               {isSubmitting ? (
@@ -293,6 +247,7 @@ export default function ApplicationForm() {
                 `무료로 진단 시작하기 🎉`
               )}
             </Button>
+            {submitError && <p className='text-sm text-red-600 text-center mt-2'>{submitError}</p>}
             <p className='text-sm text-gray-500 text-center mt-2'>
               런칭 기념 무료 이벤트! 신청 완료 후 즉시 골격진단을 시작할 수 있습니다.
             </p>
