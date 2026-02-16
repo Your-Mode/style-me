@@ -102,6 +102,17 @@
 - Avoid hardcoding API URLs; use `NEXT_PUBLIC_API_URL`
 - Keep Firestore access in `firebase.ts`
 
+## Error Handling Rules
+
+- Do not use `console.error` for runtime failures in app/api/hook code paths.
+- Use `lib/error-handler.ts` helpers for consistency:
+  - `captureAppError`: when only observability is needed
+  - `handleAppError`: when both logging and user-facing message are needed
+  - `showUserErrorMessage`: for user guidance without exception capture
+- Reuse `USER_ERROR_MESSAGES` constants instead of hardcoded alert strings.
+- Add useful Sentry tags/extra context (`feature`, `route`, `action`) at call sites.
+- Even non-blocking failures (best-effort save, cleanup failure) should be captured if they affect diagnosis.
+
 ## PR / Review Checklist
 
 - 가독성: 함수가 위에서 아래로 자연스럽게 읽히는가?
