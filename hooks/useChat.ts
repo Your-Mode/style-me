@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import * as Sentry from '@sentry/nextjs';
 import { analyzeUserInputLocal, chat, ChatMessage, ChatRequest, ChatResponse } from '@/apis/chat';
+import { captureAppError } from '@/lib/error-handler';
 
 export function useChat(initialBotMessage: string) {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -28,9 +28,9 @@ export function useChat(initialBotMessage: string) {
       });
     },
     onError: (error, variables) => {
-      console.error('Chat API error:', error);
-      Sentry.captureException(error, {
-        tags: { layer: 'api', route: 'assistant/chat' },
+      captureAppError({
+        error,
+        tags: { layer: 'api', route: 'assistant/chat', action: 'chat_fallback' },
         extra: { question: variables.question },
       });
 
