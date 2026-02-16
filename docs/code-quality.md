@@ -56,6 +56,14 @@
 - 응집도: 함께 바뀌는 코드가 물리적으로도 함께 있는가?
 - 결합도: 수정 영향 범위를 한정했는가?
 
+## Error Handling Policy
+
+- 런타임 실패 처리는 `console.error` 대신 Sentry 기반 공통 유틸을 사용한다.
+- `lib/error-handler.ts`의 `captureAppError`, `handleAppError`, `showUserErrorMessage`를 우선 사용한다.
+- 사용자 노출 문구는 `USER_ERROR_MESSAGES` 상수로 관리해 플로우 간 문구를 통일한다.
+- 호출부에서 `feature`, `route`, `action` 태그와 필요한 `extra` 컨텍스트를 함께 전달한다.
+- 비핵심/비차단 실패여도 원인 추적이 필요하면 캡처한다.
+
 ## Detailed Guide
 
 ### Readability: 맥락 줄이기
