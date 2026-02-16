@@ -1,6 +1,7 @@
 import { kyInstance } from '@/apis/ky-instance';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/firebase';
+import { captureAppError } from '@/lib/error-handler';
 
 export interface ChatMessage {
   type: 'bot' | 'user' | 'system';
@@ -30,7 +31,11 @@ export const chat = async (req: ChatRequest): Promise<ChatResponse> => {
       .json<ChatResponse>();
     return res;
   } catch (error) {
-    console.error(error, 'Failed to fetch chat response');
+    captureAppError({
+      error,
+      tags: { layer: 'api', route: 'assistant/chat', action: 'request_chat' },
+      extra: { question: req.question },
+    });
     throw error;
   }
 };
@@ -82,7 +87,16 @@ export const postBodyResult = async (req: BodyResultRequest) => {
     await addDoc(colRef, newReq);
     return response;
   } catch (error) {
-    console.error('Failed to post body result:', error);
+    captureAppError({
+      error,
+      tags: { layer: 'api', route: 'assistant/body-result', action: 'post_body_result' },
+      extra: {
+        gender: req.gender,
+        height: req.height,
+        weight: req.weight,
+        answersCount: req.answers.length,
+      },
+    });
     throw error;
   }
 };
