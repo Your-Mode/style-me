@@ -13,6 +13,7 @@ import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
 import PageContainer from '@/components/common/page-container/page-container';
 import { useResultPdfGenerator } from '@/app/result/components/result-client/hooks/useResultPdfGenerator';
 import { getStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { handleAppError, showUserErrorMessage, USER_ERROR_MESSAGES } from '@/lib/error-handler';
 
 export default function ResultClient() {
   const resultRef = useRef<HTMLDivElement>(null);
@@ -39,7 +40,7 @@ export default function ResultClient() {
       : [];
 
     if (!answers.length || !gender || height <= 0 || weight <= 0) {
-      alert('재요청에 필요한 설문 정보가 없습니다. 설문을 다시 진행해주세요.');
+      showUserErrorMessage(USER_ERROR_MESSAGES.RESULT_RETRY_MISSING_INFO);
       return;
     }
 
@@ -52,9 +53,13 @@ export default function ResultClient() {
         weight,
       });
       setBodyResult(resultData);
-    } catch {
+    } catch (error) {
       setStatus('error');
-      alert('결과 재요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      handleAppError({
+        error,
+        userMessage: USER_ERROR_MESSAGES.RESULT_RETRY_FAILED,
+        tags: { layer: 'api', route: 'assistant/body-result', action: 'retry_result' },
+      });
     }
   };
 
