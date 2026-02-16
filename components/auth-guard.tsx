@@ -14,6 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 import SiteHeader from '@/components/common/site-header/site-header';
 import PageBackground from '@/components/common/page-background/page-background';
 import PageContainer from '@/components/common/page-container/page-container';
+import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 
 const AUTH_SUCCESS_REDIRECT_DELAY_MS = 1500;
 
@@ -149,7 +150,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
         verified: true,
       };
 
-      localStorage.setItem('authToken', JSON.stringify(authToken));
+      setStorageJson(STORAGE_KEYS.AUTH_TOKEN, authToken);
       setShowSuccess(true);
 
       window.setTimeout(() => {
