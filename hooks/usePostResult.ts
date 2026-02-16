@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useMutation } from "@tanstack/react-query";
-import { BodyResultRequest, postBodyResult } from "@/apis/chat";
-import { useRouter } from "next/navigation";
-import { useBodyResultStore } from "@/hooks/useBodyResultStore";
+import { useMutation } from '@tanstack/react-query';
+import { BodyResultRequest, postBodyResult } from '@/apis/chat';
+import { useRouter } from 'next/navigation';
+import { useBodyResultStore } from '@/hooks/useBodyResultStore';
+import { handleAppError, USER_ERROR_MESSAGES } from '@/lib/error-handler';
 
 export const usePostResult = () => {
   const router = useRouter();
@@ -17,9 +18,19 @@ export const usePostResult = () => {
         setBodyResult(data);
         router.push(`/result`);
       } else {
-        // 실패 시 에러 메시지 표시
-        alert("결과 제출에 실패했습니다. 다시 시도해주세요.");
+        handleAppError({
+          error: new Error('Body result response is empty'),
+          userMessage: USER_ERROR_MESSAGES.RESULT_SUBMIT_FAILED,
+          tags: { layer: 'api', route: 'assistant/body-result', action: 'empty_result_response' },
+        });
       }
+    },
+    onError: (error) => {
+      handleAppError({
+        error,
+        userMessage: USER_ERROR_MESSAGES.RESULT_SUBMIT_FAILED,
+        tags: { layer: 'api', route: 'assistant/body-result', action: 'submit_result' },
+      });
     },
   });
 
