@@ -5,19 +5,11 @@ import { useMutation } from '@tanstack/react-query';
 import { saveSurveyAnswers } from '@/firebase';
 import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
 import { useBodyResultStore } from '@/hooks/useBodyResultStore';
-
-const AUTH_TOKEN_STORAGE_KEY = 'authToken';
+import { getStorageJson, setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 
 function getPhoneFromAuthToken(): string | null {
-  try {
-    const authTokenRaw = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
-    if (!authTokenRaw) return null;
-
-    const token = JSON.parse(authTokenRaw) as { phone?: string };
-    return token.phone ?? null;
-  } catch {
-    return null;
-  }
+  const token = getStorageJson<{ phone?: string }>(STORAGE_KEYS.AUTH_TOKEN);
+  return token?.phone ?? null;
 }
 
 interface CompleteSurveyParams {
@@ -45,7 +37,7 @@ export function useSurveyCompletion() {
         }
       }
 
-      localStorage.setItem('surveyAnswers', JSON.stringify(answers));
+      setStorageJson(STORAGE_KEYS.SURVEY_ANSWERS, answers);
 
       clearBodyResult();
       setStatus('loading');
