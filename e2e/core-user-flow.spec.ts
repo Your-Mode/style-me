@@ -3,7 +3,11 @@ import { expect, test } from '@playwright/test';
 const TOTAL_SURVEY_QUESTIONS = 15;
 
 test('Home -> Apply -> Survey -> Result 핵심 플로우', async ({ page }) => {
-  await page.route('**/assistant/chat', async (route) => {
+  let chatRequestCount = 0;
+  let bodyResultRequestCount = 0;
+
+  await page.route('**/assistant/chat**', async (route) => {
+    chatRequestCount += 1;
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -16,7 +20,8 @@ test('Home -> Apply -> Survey -> Result 핵심 플로우', async ({ page }) => {
     });
   });
 
-  await page.route('**/assistant/body-result', async (route) => {
+  await page.route('**/assistant/body-result**', async (route) => {
+    bodyResultRequestCount += 1;
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -67,6 +72,10 @@ test('Home -> Apply -> Survey -> Result 핵심 플로우', async ({ page }) => {
   }
 
   await expect(page).toHaveURL(/\/result/);
+  await expect
+    .poll(() => chatRequestCount, { timeout: 20_000 })
+    .toBeGreaterThanOrEqual(TOTAL_SURVEY_QUESTIONS);
+  await expect.poll(() => bodyResultRequestCount, { timeout: 20_000 }).toBeGreaterThan(0);
   await expect
     .poll(
       async () => page.evaluate(() => window.localStorage.getItem('body-result-storage') ?? ''),
