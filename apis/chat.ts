@@ -2,6 +2,7 @@ import { kyInstance } from '@/apis/ky-instance';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { captureAppError } from '@/lib/error-policy';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 
 export interface ChatMessage {
   type: 'bot' | 'user' | 'system';
@@ -81,12 +82,14 @@ export const postBodyResult = async (req: BodyResultRequest) => {
         timeout: 28000,
       })
       .json<BodyResultResponse>();
-    const colRef = collection(db, 'body_result');
-    const newReq = {
-      ...req,
-      createdAt: new Date().toLocaleString().toString(),
-    };
-    await addDoc(colRef, newReq);
+    if (!IS_E2E_TEST_MODE) {
+      const colRef = collection(db, 'body_result');
+      const newReq = {
+        ...req,
+        createdAt: new Date().toLocaleString().toString(),
+      };
+      await addDoc(colRef, newReq);
+    }
     return response;
   } catch (error) {
     captureAppError(error, {
