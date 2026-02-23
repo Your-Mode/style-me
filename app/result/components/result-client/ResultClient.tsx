@@ -13,6 +13,7 @@ import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
 import PageContainer from '@/components/common/page-container/page-container';
 import { useResultPdfGenerator } from '@/app/result/components/result-client/hooks/useResultPdfGenerator';
 import { getStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 export default function ResultClient() {
   const resultRef = useRef<HTMLDivElement>(null);
@@ -52,9 +53,14 @@ export default function ResultClient() {
         weight,
       });
       setBodyResult(resultData);
-    } catch {
+    } catch (error) {
+      captureAppError(error, {
+        layer: 'api',
+        feature: 'result',
+        action: 'retry-body-result',
+      });
       setStatus('error');
-      alert('결과 재요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      alert(USER_ERROR_MESSAGES.RESULT_REQUEST_FAILED);
     }
   };
 
@@ -88,3 +94,4 @@ export default function ResultClient() {
     </div>
   );
 }
+
