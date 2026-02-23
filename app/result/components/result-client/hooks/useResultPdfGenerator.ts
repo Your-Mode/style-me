@@ -5,6 +5,7 @@ import {
 } from '@/app/result/components/result-client/print/printClassManager';
 import { getBrowserPrintMessage } from '@/app/result/components/result-client/print/getBrowserPrintMessage';
 import { createPrintStyleElement } from '@/app/result/components/result-client/print/printStyle';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 const PRINT_CLEANUP_DELAY_MS = 2000;
 
@@ -44,8 +45,12 @@ export function useResultPdfGenerator({ hasResult, resultRef }: UseResultPdfGene
         document.head.removeChild(printStyle);
       }
       cleanupPrintClasses(rootElement);
-      console.error('PDF 생성 중 오류:', error);
-      alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+      captureAppError(error, {
+        layer: 'ui',
+        feature: 'result',
+        action: 'generate-pdf',
+      });
+      alert(USER_ERROR_MESSAGES.PDF_GENERATION_FAILED);
     } finally {
       setIsGeneratingPDF(false);
     }
@@ -53,3 +58,4 @@ export function useResultPdfGenerator({ hasResult, resultRef }: UseResultPdfGene
 
   return { generatePDF, isGeneratingPDF };
 }
+
