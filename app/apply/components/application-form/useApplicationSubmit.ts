@@ -5,6 +5,7 @@ import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
 import { BodyDiagnosisFormData } from '@/types/body';
 import { SUBMIT_DELAY_MS } from '@/app/apply/components/application-form/application-form.constants';
 import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 type UseApplicationSubmitParams = {
   formData: BodyDiagnosisFormData;
@@ -42,8 +43,13 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
       await wait(SUBMIT_DELAY_MS);
       setStorageJson(STORAGE_KEYS.USER_INFO, formData);
       router.push('/complete');
-    } catch {
-      setSubmitError('신청 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    } catch (error) {
+      captureAppError(error, {
+        layer: 'firebase',
+        feature: 'apply',
+        action: 'submit-application',
+      });
+      setSubmitError(USER_ERROR_MESSAGES.GENERIC_RETRY);
     } finally {
       setIsSubmitting(false);
     }
@@ -55,3 +61,4 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
     handleSubmit,
   };
 }
+
