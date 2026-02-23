@@ -15,6 +15,7 @@ import SiteHeader from '@/components/common/site-header/site-header';
 import PageBackground from '@/components/common/page-background/page-background';
 import PageContainer from '@/components/common/page-container/page-container';
 import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 const AUTH_SUCCESS_REDIRECT_DELAY_MS = 1500;
 
@@ -156,8 +157,13 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
       window.setTimeout(() => {
         setIsAuthenticated(true);
       }, AUTH_SUCCESS_REDIRECT_DELAY_MS);
-    } catch {
-      setError('인증 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      captureAppError(error, {
+        layer: 'firebase',
+        feature: 'auth-guard',
+        action: 'verify-phone-number',
+      });
+      setError(USER_ERROR_MESSAGES.GENERIC_RETRY);
     }
   };
 
