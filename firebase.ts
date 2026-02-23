@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { doc, getDoc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
 import { BodyDiagnosisFormData } from '@/types/body';
 import { getAnalytics, isSupported } from 'firebase/analytics';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,6 +32,10 @@ if (typeof window !== 'undefined') {
 const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
 export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
+  if (IS_E2E_TEST_MODE) {
+    return;
+  }
+
   const phoneId = normalizePhone(req.phone);
   const newReq = {
     ...req,
@@ -49,6 +54,10 @@ const assertPhoneId = (raw: string) => {
 
 // 설문 답변 저장
 export async function saveSurveyAnswers(phone: string, answers: string[]): Promise<string> {
+  if (IS_E2E_TEST_MODE) {
+    return normalizePhone(phone);
+  }
+
   const phoneId = assertPhoneId(phone);
   const ref = doc(db, 'surveys', phoneId);
   await setDoc(
@@ -64,6 +73,10 @@ export async function saveSurveyAnswers(phone: string, answers: string[]): Promi
 }
 
 export async function valueExists(collectionName: string, phone: string): Promise<boolean> {
+  if (IS_E2E_TEST_MODE) {
+    return collectionName === 'apply' && normalizePhone(phone).length >= 10;
+  }
+
   const phoneId = assertPhoneId(phone);
   const snap = await getDoc(doc(db, collectionName, phoneId));
   return snap.exists();
