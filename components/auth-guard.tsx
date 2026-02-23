@@ -16,8 +16,9 @@ import PageBackground from '@/components/common/page-background/page-background'
 import PageContainer from '@/components/common/page-container/page-container';
 import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 
-const AUTH_SUCCESS_REDIRECT_DELAY_MS = 1500;
+const AUTH_SUCCESS_REDIRECT_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1500;
 
 interface AuthGuardProps {
   children: React.ReactNode;

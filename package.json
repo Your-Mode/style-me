@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "e2e": "pnpm exec playwright test",
+    "e2e:headed": "pnpm exec playwright test --headed",
+    "e2e:ui": "pnpm exec playwright test --ui",
     "prepare": "husky"
   },
   "dependencies": {
@@ -36,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
