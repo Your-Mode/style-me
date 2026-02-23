@@ -67,5 +67,11 @@ test('Home -> Apply -> Survey -> Result 핵심 플로우', async ({ page }) => {
   }
 
   await expect(page).toHaveURL(/\/result/);
-  await expect(page.getByText('E2E_TEST_TYPE')).toBeVisible();
+  await expect
+    .poll(
+      async () => page.evaluate(() => window.localStorage.getItem('body-result-storage') ?? ''),
+      { timeout: 20_000 },
+    )
+    .toContain('E2E_TEST_TYPE');
+  await expect(page.locator('h2', { hasText: 'E2E_TEST_TYPE' })).toBeVisible({ timeout: 20_000 });
 });
