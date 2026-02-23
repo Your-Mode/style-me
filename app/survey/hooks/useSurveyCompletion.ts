@@ -6,6 +6,7 @@ import { saveSurveyAnswers } from '@/firebase';
 import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
 import { useBodyResultStore } from '@/hooks/useBodyResultStore';
 import { getStorageJson, setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 function getPhoneFromAuthToken(): string | null {
   const token = getStorageJson<{ phone?: string }>(STORAGE_KEYS.AUTH_TOKEN);
@@ -32,7 +33,12 @@ export function useSurveyCompletion() {
       if (tokenPhone) {
         try {
           await saveSurveyAnswers(tokenPhone, answers);
-        } catch {
+        } catch (error) {
+          captureAppError(error, {
+            layer: 'firebase',
+            feature: 'survey',
+            action: 'save-survey-answers',
+          });
           // 설문 저장 실패 시에도 분석 흐름은 이어간다.
         }
       }
@@ -53,9 +59,14 @@ export function useSurveyCompletion() {
       try {
         const result = await requestBodyResult(requestData);
         setBodyResult(result);
-      } catch {
+      } catch (error) {
+        captureAppError(error, {
+          layer: 'api',
+          feature: 'survey',
+          action: 'request-body-result',
+        });
         setStatus('error');
-        alert('결과 제출에 실패했습니다. 다시 시도해주세요.');
+        alert(USER_ERROR_MESSAGES.RESULT_REQUEST_FAILED);
       }
     },
     [clearBodyResult, gender, height, requestBodyResult, router, setBodyResult, setStatus, weight],
@@ -63,3 +74,4 @@ export function useSurveyCompletion() {
 
   return { completeSurvey };
 }
+
