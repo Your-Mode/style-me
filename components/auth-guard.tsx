@@ -14,8 +14,11 @@ import { useMutation } from '@tanstack/react-query';
 import SiteHeader from '@/components/common/site-header/site-header';
 import PageBackground from '@/components/common/page-background/page-background';
 import PageContainer from '@/components/common/page-container/page-container';
+import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 
-const AUTH_SUCCESS_REDIRECT_DELAY_MS = 1500;
+const AUTH_SUCCESS_REDIRECT_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1500;
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -149,14 +152,19 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
         verified: true,
       };
 
-      localStorage.setItem('authToken', JSON.stringify(authToken));
+      setStorageJson(STORAGE_KEYS.AUTH_TOKEN, authToken);
       setShowSuccess(true);
 
       window.setTimeout(() => {
         setIsAuthenticated(true);
       }, AUTH_SUCCESS_REDIRECT_DELAY_MS);
-    } catch {
-      setError('인증 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (error) {
+      captureAppError(error, {
+        layer: 'firebase',
+        feature: 'auth-guard',
+        action: 'verify-phone-number',
+      });
+      setError(USER_ERROR_MESSAGES.GENERIC_RETRY);
     }
   };
 

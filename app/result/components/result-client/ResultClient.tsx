@@ -12,6 +12,8 @@ import ResultContent from '@/app/result/_section/ResultContent';
 import PdfGuideSection from '@/app/result/_section/PdfGuideSection';
 import PageContainer from '@/components/common/page-container/page-container';
 import { useResultPdfGenerator } from '@/app/result/components/result-client/hooks/useResultPdfGenerator';
+import { getStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 export default function ResultClient() {
   const resultRef = useRef<HTMLDivElement>(null);
@@ -32,14 +34,10 @@ export default function ResultClient() {
   }, []);
 
   const handleRetry = async () => {
-    let answers: string[] = [];
-    try {
-      const rawAnswers = localStorage.getItem('surveyAnswers');
-      const parsedAnswers = rawAnswers ? JSON.parse(rawAnswers) : [];
-      answers = Array.isArray(parsedAnswers) ? parsedAnswers : [];
-    } catch {
-      answers = [];
-    }
+    const savedAnswers = getStorageJson<unknown>(STORAGE_KEYS.SURVEY_ANSWERS);
+    const answers = Array.isArray(savedAnswers)
+      ? savedAnswers.filter((answer) => typeof answer === 'string')
+      : [];
 
     if (!answers.length || !gender || height <= 0 || weight <= 0) {
       alert('재요청에 필요한 설문 정보가 없습니다. 설문을 다시 진행해주세요.');
@@ -55,9 +53,14 @@ export default function ResultClient() {
         weight,
       });
       setBodyResult(resultData);
-    } catch {
+    } catch (error) {
+      captureAppError(error, {
+        layer: 'api',
+        feature: 'result',
+        action: 'retry-body-result',
+      });
       setStatus('error');
-      alert('결과 재요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      alert(USER_ERROR_MESSAGES.RESULT_REQUEST_FAILED);
     }
   };
 
@@ -91,3 +94,4 @@ export default function ResultClient() {
     </div>
   );
 }
+

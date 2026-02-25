@@ -4,9 +4,10 @@ import { useChat } from '@/hooks/useChat';
 import type { ChatResponse } from '@/apis/chat';
 import { useConnectionStatus } from './useConnectionStatus';
 import { useSurveyCompletion } from './useSurveyCompletion';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 
-const QUESTION_TRANSITION_DELAY_MS = 1500;
-const RESPONSE_FAILURE_DELAY_MS = 1000;
+const QUESTION_TRANSITION_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1500;
+const RESPONSE_FAILURE_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1000;
 
 export function useSurveyChat() {
   const totalQuestions = surveyQuestions.length;

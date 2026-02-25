@@ -1,6 +1,8 @@
 import { kyInstance } from '@/apis/ky-instance';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/firebase';
+import { captureAppError } from '@/lib/error-policy';
+import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
 
 export interface ChatMessage {
   type: 'bot' | 'user' | 'system';
@@ -30,7 +32,13 @@ export const chat = async (req: ChatRequest): Promise<ChatResponse> => {
       .json<ChatResponse>();
     return res;
   } catch (error) {
-    console.error(error, 'Failed to fetch chat response');
+    captureAppError(error, {
+      layer: 'api',
+      feature: 'chat',
+      action: 'fetch-chat-response',
+      tags: { route: 'assistant/chat' },
+      extra: { question: req.question },
+    });
     throw error;
   }
 };
@@ -74,15 +82,28 @@ export const postBodyResult = async (req: BodyResultRequest) => {
         timeout: 28000,
       })
       .json<BodyResultResponse>();
-    const colRef = collection(db, 'body_result');
-    const newReq = {
-      ...req,
-      createdAt: new Date().toLocaleString().toString(),
-    };
-    await addDoc(colRef, newReq);
+    if (!IS_E2E_TEST_MODE) {
+      const colRef = collection(db, 'body_result');
+      const newReq = {
+        ...req,
+        createdAt: new Date().toLocaleString().toString(),
+      };
+      await addDoc(colRef, newReq);
+    }
     return response;
   } catch (error) {
-    console.error('Failed to post body result:', error);
+    captureAppError(error, {
+      layer: 'api',
+      feature: 'result',
+      action: 'post-body-result',
+      tags: { route: 'assistant/body-result' },
+      extra: {
+        answersCount: req.answers.length,
+        gender: req.gender,
+        height: req.height,
+        weight: req.weight,
+      },
+    });
     throw error;
   }
 };

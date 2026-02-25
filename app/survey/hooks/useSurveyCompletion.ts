@@ -5,19 +5,12 @@ import { useMutation } from '@tanstack/react-query';
 import { saveSurveyAnswers } from '@/firebase';
 import { useApplyUserInfoStore } from '@/hooks/useApplyUserInfoStore';
 import { useBodyResultStore } from '@/hooks/useBodyResultStore';
-
-const AUTH_TOKEN_STORAGE_KEY = 'authToken';
+import { getStorageJson, setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
+import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 
 function getPhoneFromAuthToken(): string | null {
-  try {
-    const authTokenRaw = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
-    if (!authTokenRaw) return null;
-
-    const token = JSON.parse(authTokenRaw) as { phone?: string };
-    return token.phone ?? null;
-  } catch {
-    return null;
-  }
+  const token = getStorageJson<{ phone?: string }>(STORAGE_KEYS.AUTH_TOKEN);
+  return token?.phone ?? null;
 }
 
 interface CompleteSurveyParams {
@@ -40,12 +33,17 @@ export function useSurveyCompletion() {
       if (tokenPhone) {
         try {
           await saveSurveyAnswers(tokenPhone, answers);
-        } catch {
+        } catch (error) {
+          captureAppError(error, {
+            layer: 'firebase',
+            feature: 'survey',
+            action: 'save-survey-answers',
+          });
           // 설문 저장 실패 시에도 분석 흐름은 이어간다.
         }
       }
 
-      localStorage.setItem('surveyAnswers', JSON.stringify(answers));
+      setStorageJson(STORAGE_KEYS.SURVEY_ANSWERS, answers);
 
       clearBodyResult();
       setStatus('loading');
@@ -61,9 +59,14 @@ export function useSurveyCompletion() {
       try {
         const result = await requestBodyResult(requestData);
         setBodyResult(result);
-      } catch {
+      } catch (error) {
+        captureAppError(error, {
+          layer: 'api',
+          feature: 'survey',
+          action: 'request-body-result',
+        });
         setStatus('error');
-        alert('결과 제출에 실패했습니다. 다시 시도해주세요.');
+        alert(USER_ERROR_MESSAGES.RESULT_REQUEST_FAILED);
       }
     },
     [clearBodyResult, gender, height, requestBodyResult, router, setBodyResult, setStatus, weight],
@@ -71,3 +74,4 @@ export function useSurveyCompletion() {
 
   return { completeSurvey };
 }
+

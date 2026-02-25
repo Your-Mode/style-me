@@ -1,5 +1,5 @@
 import ky from 'ky';
-import * as Sentry from '@sentry/nextjs';
+import { captureAppError } from '@/lib/error-policy';
 
 export const kyInstance = ky.create({
   prefixUrl: `${process.env.NEXT_PUBLIC_API_URL}`,
@@ -8,8 +8,11 @@ export const kyInstance = ky.create({
     afterResponse: [
       async (_request, _options, response) => {
         if (response.ok) return response;
-        Sentry.captureException(new Error(`HTTP ${response.status} ${response.statusText}`), {
-          tags: { layer: 'api', client: 'ky' },
+        captureAppError(new Error(`HTTP ${response.status} ${response.statusText}`), {
+          layer: 'api',
+          feature: 'network',
+          action: 'after-response',
+          tags: { client: 'ky' },
           extra: {
             url: response.url,
             status: response.status,
@@ -21,8 +24,11 @@ export const kyInstance = ky.create({
     ],
     beforeError: [
       async (error) => {
-        Sentry.captureException(error, {
-          tags: { layer: 'api', client: 'ky' },
+        captureAppError(error, {
+          layer: 'api',
+          feature: 'network',
+          action: 'before-error',
+          tags: { client: 'ky' },
           extra: {
             url: error.request?.url,
             method: error.request?.method,
