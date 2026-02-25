@@ -26,6 +26,8 @@ reviews:
   path_instructions:
     - path: '**/*'
       instructions: |
+        Always write review comments in Korean.
+
         Review priority:
         1) Potential bug or runtime exception
         2) Regression risk (impact on existing behavior)
