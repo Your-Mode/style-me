@@ -1,0 +1,52 @@
+language: ko-KR
+early_access: false
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: '@coderabbitai summary'
+  auto_title_placeholder: '@coderabbitai'
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  changed_files_summary: false
+  sequence_diagrams: false
+  path_filters:
+    - '**'
+    - '!pnpm-lock.yaml'
+    - '!**/package-lock.json'
+    - '!**/yarn.lock'
+    - '!**/*.min.js'
+    - '!**/*.map'
+    - '!**/*.snap'
+    - '!**/test-results/**'
+    - '!**/playwright-report/**'
+    - '!**/.next/**'
+    - '!**/coverage/**'
+  path_instructions:
+    - path: '**/*'
+      instructions: |
+        Always write review comments in Korean.
+
+        Review priority:
+        1) Potential bug or runtime exception
+        2) Regression risk (impact on existing behavior)
+        3) Missing tests or weak test coverage points
+        4) Refactoring points that improve maintainability
+        5) Style and formatting suggestions (lowest priority)
+
+        Comment quality bar:
+        - Explain why it matters and include a concrete failure scenario.
+        - Avoid preference-only comments unless there is clear user or quality impact.
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords:
+      - wip
+      - draft
+      - do not review
+    base_branches:
+      - main
+      - develop
+chat:
+  auto_reply: true

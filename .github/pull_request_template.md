@@ -20,6 +20,7 @@ Provide a clear, concise description of this PR.
 - [ ] Build passes locally (`pnpm build`)
 - [ ] No breaking changes, or they are documented below
 - [ ] Tests added/updated where appropriate
+- [ ] CodeRabbit comments reviewed and handled (accepted/deferred/ignored with reason)
 - [ ] Docs/comments updated where helpful
 
 ## Breaking Changes (if any)
