@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { postBodyResult } from '@/apis/chat';
 import { useBodyResultStore } from '@/hooks/useBodyResultStore';
@@ -14,9 +14,12 @@ import PageContainer from '@/components/common/page-container/page-container';
 import { useResultPdfGenerator } from '@/app/result/components/result-client/hooks/useResultPdfGenerator';
 import { getStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
+import { overlay } from 'overlay-kit';
+import ReviewModal from '@/app/result/components/review-modal/ReviewModal';
 
 export default function ResultClient() {
   const resultRef = useRef<HTMLDivElement>(null);
+  const [hasOpenedReview, setHasOpenedReview] = useState(false);
   const { bodyResult: result, status, setBodyResult, setStatus } = useBodyResultStore();
   const { gender, height, weight } = useApplyUserInfoStore();
   const { generatePDF, isGeneratingPDF } = useResultPdfGenerator({
@@ -64,6 +67,19 @@ export default function ResultClient() {
     }
   };
 
+  const handleGeneratePdf = async () => {
+    await generatePDF();
+
+    if (hasOpenedReview) {
+      return;
+    }
+
+    setHasOpenedReview(true);
+    overlay.open(({ isOpen, close }) => (
+      <ReviewModal isOpen={isOpen} onClose={close} bodyType={result.body_type} />
+    ));
+  };
+
   if (status === 'loading') {
     return (
       <div className='py-8 px-4'>
@@ -87,9 +103,16 @@ export default function ResultClient() {
   return (
     <div className='py-8 px-4'>
       <PageContainer className='max-w-6xl'>
-        <ActionButtons isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
-        <ResultContent result={result} resultRef={resultRef} />
-        <PdfGuideSection isGeneratingPDF={isGeneratingPDF} onGeneratePDF={generatePDF} />
+        <ActionButtons isGeneratingPDF={isGeneratingPDF} onGeneratePDF={() => void handleGeneratePdf()} />
+        <ResultContent
+          result={result}
+          resultRef={resultRef}
+          userProfile={{ gender, height, weight }}
+        />
+        <PdfGuideSection
+          isGeneratingPDF={isGeneratingPDF}
+          onGeneratePDF={() => void handleGeneratePdf()}
+        />
       </PageContainer>
     </div>
   );
