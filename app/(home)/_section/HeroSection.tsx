@@ -1,101 +1,114 @@
-import { Check, Sparkles, Star } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { ArrowRight, BadgeCheck, Check, Clock3, LineChart, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function HeroSection() {
   return (
-    <section className='py-20 px-6 relative overflow-hidden'>
-      <div className='absolute inset-0'>
-        <div className='absolute top-20 left-10 w-32 h-32 bg-rose-200/30 rounded-full blur-3xl'></div>
-        <div className='absolute bottom-20 right-10 w-40 h-40 bg-pink-200/30 rounded-full blur-3xl'></div>
-        <div className='absolute top-1/2 left-1/2 w-60 h-60 bg-purple-200/20 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2'></div>
+    <section className='relative overflow-hidden px-6 py-16 md:py-24'>
+      <div className='absolute inset-0 pointer-events-none'>
+        <div className='absolute -top-10 -left-6 h-52 w-52 rounded-full bg-rose-200/50 blur-3xl' />
+        <div className='absolute top-1/3 -right-10 h-64 w-64 rounded-full bg-amber-200/40 blur-3xl' />
+        <div className='absolute -bottom-10 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-sky-200/35 blur-3xl' />
       </div>
 
-      <div className='container mx-auto text-center relative z-10'>
-        <div className='max-w-4xl mx-auto'>
-          <div className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full mb-8 shadow-lg border border-rose-200'>
-            <Sparkles className='h-4 w-4 text-rose-500 mr-2' />
-            <span className='text-sm font-medium text-rose-700'>AI 기반 개인 맞춤 스타일링</span>
+      <div className='container relative z-10 mx-auto'>
+        <div className='grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]'>
+          <div>
+            <div className='mb-6 inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/90 px-4 py-2 shadow-sm backdrop-blur'>
+              <Sparkles className='h-4 w-4 text-rose-500' />
+              <span className='text-sm font-semibold text-rose-700'>AI 기반 개인 맞춤 스타일링</span>
+            </div>
+
+            <h1 className='mb-6 text-4xl font-bold leading-tight text-slate-900 md:text-6xl'>
+              결제 후 바로 받는
+              <br />
+              <span className='bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 bg-clip-text text-transparent'>
+                프리미엄 스타일 리포트
+              </span>
+            </h1>
+
+            <p className='mb-8 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl'>
+              골격 진단 결과를 끝내지 않고, 실제 코디에 바로 쓰는 추천/주의/보완 포인트까지 한 번에 제공합니다.
+            </p>
+
+            <div className='mb-8 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:items-center'>
+              <span className='inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 ring-1 ring-slate-200'>
+                <Clock3 className='h-4 w-4 text-rose-500' />
+                10분 내 완료
+              </span>
+              <span className='inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 ring-1 ring-slate-200'>
+                <ShieldCheck className='h-4 w-4 text-emerald-500' />
+                개인 맞춤 분석
+              </span>
+              <span className='inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 ring-1 ring-slate-200'>
+                <LineChart className='h-4 w-4 text-sky-500' />
+                결과 PDF 저장
+              </span>
+            </div>
+
+            <div className='mb-10 flex flex-col gap-4 sm:flex-row'>
+              <Link href='/apply'>
+                <Button className='h-12 rounded-xl bg-slate-900 px-8 text-base font-semibold text-white hover:bg-slate-800'>
+                  진단 시작하기
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </Button>
+              </Link>
+              <a
+                href='#service'
+                className='inline-flex h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-8 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50'
+              >
+                서비스 살펴보기
+              </a>
+            </div>
+
+            <div className='grid grid-cols-3 gap-4 sm:max-w-lg'>
+              <div className='rounded-xl border border-rose-200/70 bg-white/85 p-4 shadow-sm backdrop-blur'>
+                <p className='text-2xl font-bold text-rose-600'>1,000+</p>
+                <p className='text-xs font-medium text-slate-500'>누적 진단</p>
+              </div>
+              <div className='rounded-xl border border-amber-200/70 bg-white/85 p-4 shadow-sm backdrop-blur'>
+                <p className='text-2xl font-bold text-amber-600'>99%</p>
+                <p className='text-xs font-medium text-slate-500'>만족도</p>
+              </div>
+              <div className='rounded-xl border border-sky-200/70 bg-white/85 p-4 shadow-sm backdrop-blur'>
+                <p className='text-2xl font-bold text-sky-600'>PDF</p>
+                <p className='text-xs font-medium text-slate-500'>리포트 제공</p>
+              </div>
+            </div>
           </div>
 
-          <h1 className='text-5xl md:text-7xl font-bold mb-8 leading-tight'>
-            <span className='text-gray-800'>나만의</span>
-            <br />
-            <span className='bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500 bg-clip-text text-transparent'>
-              완벽한 스타일
-            </span>
-            <br />
-            <span className='text-gray-800'>을 찾아보세요</span>
-          </h1>
-
-          <p className='text-xl md:text-2xl text-gray-600 mb-12 leading-relaxed font-light max-w-3xl mx-auto'>
-            17가지 정밀한 골격 분석으로 당신에게 가장 잘 어울리는 스타일을 찾아드려요.
-            <br />
-            전문 스타일리스트의 노하우가 담긴 맞춤형 가이드를 받아보세요.
-          </p>
-
-          {/* Service Card */}
-          <div className='max-w-lg mx-auto mb-16'>
-            <Card className='border-2 border-rose-200 bg-white/80 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2'>
-              <CardContent className='p-10 text-center'>
-                <div className='w-20 h-20 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl'>
-                  <span className='text-3xl'>👗</span>
-                </div>
-                <h3 className='text-3xl font-bold text-gray-800 mb-3'>AI 골격진단</h3>
-                <p className='text-gray-600 mb-6 font-medium'>정확하고 세심한 맞춤 스타일링</p>
-                <div className='text-4xl font-bold mb-6'>
-                  <span className='line-through text-gray-400 text-2xl mr-2'>30,000원</span>
-                  <span className='text-rose-500'>0원</span>
-                  <div className='text-lg font-medium text-rose-600 mt-2'>🎉 런칭 이벤트</div>
-                </div>
-                <ul className='text-sm text-gray-700 mb-8 space-y-3 text-left'>
-                  <li className='flex items-center'>
-                    <Check className='h-4 w-4 text-rose-400 mr-3' />
-                    17문항 정밀 골격 분석
-                  </li>
-                  <li className='flex items-center'>
-                    <Check className='h-4 w-4 text-rose-400 mr-3' />
-                    개인 맞춤 스타일링 가이드
-                  </li>
-                  <li className='flex items-center'>
-                    <Check className='h-4 w-4 text-rose-400 mr-3' />
-                    개인 맞춤 패션 제품 추천
-                  </li>
-                  <li className='flex items-center'>
-                    <Check className='h-4 w-4 text-rose-400 mr-3' />
-                    액세서리 스타일링 팁
-                  </li>
-                  <li className='flex items-center'>
-                    <Check className='h-4 w-4 text-rose-400 mr-3' />
-                    체형별 코디 가이드
-                  </li>
-                  <li className='flex items-center text-red-400'>
-                    <Star className='h-4 w-4 text-rose-400 mr-3' />
-                    카카오톡 채널로 연락주시면 1:1 상담을 통해 더 자세한 정보를 드립니다
-                  </li>
-                </ul>
-                <Link href='/apply'>
-                  <Button className='w-full bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300'>
-                    스타일링 시작하기
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className='grid grid-cols-3 gap-8 max-w-2xl mx-auto'>
-            <div className='text-center'>
-              <div className='text-3xl font-bold text-rose-500'>10,000+</div>
-              <div className='text-sm text-gray-600 font-medium'>만족한 고객</div>
+          <div className='rounded-3xl border border-slate-200/80 bg-white/85 p-6 shadow-2xl backdrop-blur md:p-7'>
+            <div className='mb-4 flex items-center justify-between'>
+              <p className='text-sm font-semibold tracking-wide text-slate-500'>RESULT PREVIEW</p>
+              <span className='rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700'>
+                분석 완료
+              </span>
             </div>
-            <div className='text-center'>
-              <div className='text-3xl font-bold text-pink-500'>99%</div>
-              <div className='text-sm text-gray-600 font-medium'>만족도</div>
+            <div className='rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 p-5 text-white'>
+              <p className='mb-2 text-sm text-rose-100'>진단 타입</p>
+              <p className='text-2xl font-bold'>웨이브 타입</p>
+              <p className='mt-2 text-sm text-rose-100'>곡선을 살리는 실루엣이 강점을 극대화합니다.</p>
             </div>
-            <div className='text-center'>
-              <div className='text-3xl font-bold text-purple-500'>무료</div>
-              <div className='text-sm text-gray-600 font-medium'>이벤트 중</div>
+
+            <div className='mt-5 space-y-3'>
+              {[
+                '추천: 허리 라인이 보이는 자켓',
+                '피해야 할 스타일: 과한 박시 핏 상의',
+                '보완 팁: 목선이 열린 상의로 밸런스 조절',
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className='flex items-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700'
+                >
+                  <Check className='mr-2 h-4 w-4 text-emerald-500' />
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            <div className='mt-5 flex items-center gap-2 rounded-xl bg-slate-100/80 px-3 py-2 text-sm text-slate-600'>
+              <BadgeCheck className='h-4 w-4 text-slate-700' />
+              리포트 PDF로 저장해서 쇼핑할 때 바로 참고
             </div>
           </div>
         </div>
