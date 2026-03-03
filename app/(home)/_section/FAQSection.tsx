@@ -25,7 +25,7 @@ export default function FAQSection() {
               </div>
             </AccordionTrigger>
             <AccordionContent className='px-8 pb-6 text-gray-600 leading-relaxed'>
-              총 17개의 질문에 답변하는데 약 10-15분 정도 소요됩니다. 각 질문은 선택형으로 되어있어
+              총 15개의 질문에 답변하는데 약 10-15분 정도 소요됩니다. 각 질문은 선택형으로 되어있어
               빠르게 진행할 수 있으며, 결제 완료 후 즉시 진단을 시작할 수 있습니다. 진단 결과는 설문
               완료 즉시 확인 가능합니다.
             </AccordionContent>

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { doc, getDoc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
 import { BodyDiagnosisFormData } from '@/types/body';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
@@ -80,4 +80,46 @@ export async function valueExists(collectionName: string, phone: string): Promis
   const phoneId = assertPhoneId(phone);
   const snap = await getDoc(doc(db, collectionName, phoneId));
   return snap.exists();
+}
+
+export interface ContactInquiryRequest {
+  name: string;
+  email: string;
+  topic: string;
+  message: string;
+  source: 'floating-button' | 'footer';
+  userAgent?: string;
+}
+
+export async function submitContactInquiry(req: ContactInquiryRequest): Promise<string> {
+  if (IS_E2E_TEST_MODE) {
+    return 'test-contact-inquiry-id';
+  }
+
+  const created = await addDoc(collection(db, 'contact_inquiries'), {
+    ...req,
+    status: 'new',
+    createdAt: serverTimestamp(),
+  });
+  return created.id;
+}
+
+export interface ReviewRequest {
+  rating: number;
+  comment: string;
+  source: 'result-page' | 'pdf-download';
+  bodyType?: string;
+}
+
+export async function submitReview(req: ReviewRequest): Promise<string> {
+  if (IS_E2E_TEST_MODE) {
+    return 'test-review-id';
+  }
+
+  const created = await addDoc(collection(db, 'reviews'), {
+    ...req,
+    status: 'pending',
+    createdAt: serverTimestamp(),
+  });
+  return created.id;
 }
