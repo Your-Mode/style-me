@@ -68,6 +68,10 @@ export default function ResultClient() {
   };
 
   const handleGeneratePdf = async () => {
+    if (!result) {
+      return;
+    }
+
     await generatePDF();
 
     if (hasOpenedReview) {
