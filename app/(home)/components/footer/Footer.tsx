@@ -1,4 +1,5 @@
-import { Heart, Mail, Phone } from 'lucide-react';
+﻿import Link from 'next/link';
+import { Heart, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -16,10 +17,10 @@ export default function Footer() {
               </div>
             </div>
             <p className='text-gray-400 mb-6 leading-relaxed'>
-              AI 기반 개인 맞춤 스타일링으로 당신만의 완벽한 스타일을 찾아보세요. 전문
-              스타일리스트가 설계한 정확한 진단과 맞춤형 가이드를 제공합니다.
+              AI 기반 개인 맞춤 스타일링 서비스로 당신에게 맞는 진단과 가이드를 제공합니다.
             </p>
           </div>
+
           <div>
             <h3 className='text-xl font-bold mb-6 text-rose-400'>서비스</h3>
             <ul className='space-y-3 text-gray-400'>
@@ -30,12 +31,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href='#service' className='hover:text-rose-400 transition-colors'>
-                  스타일링 가이드
-                </a>
-              </li>
-              <li>
-                <a href='#service' className='hover:text-rose-400 transition-colors'>
-                  컬러 분석
+                  스타일 가이드
                 </a>
               </li>
               <li>
@@ -45,16 +41,13 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
           <div>
             <h3 className='text-xl font-bold mb-6 text-rose-400'>문의</h3>
             <div className='space-y-3 text-gray-400'>
               <div className='flex items-center'>
                 <Mail className='h-5 w-5 mr-3' />
-                <span>urmode@naver.com</span>
-              </div>
-              <div className='flex items-center'>
-                <Phone className='h-5 w-5 mr-3' />
-                <span>010-6415-1548</span>
+                <span>yourmode0604@gmail.com</span>
               </div>
               <div className='text-sm'>
                 <p>평일 09:00 - 18:00</p>
@@ -63,8 +56,23 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className='border-t border-gray-800 mt-12 pt-8 text-center text-gray-400'>
+
+        <div className='border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 space-y-2'>
           <p>&copy; 2025 Style Me. All rights reserved.</p>
+          <div className='flex items-center justify-center gap-4 text-sm'>
+            <Link
+              href='/privacy'
+              className='hover:text-rose-400 transition-colors underline-offset-2 hover:underline'
+            >
+              개인정보처리방침
+            </Link>
+            <Link
+              href='/terms'
+              className='hover:text-rose-400 transition-colors underline-offset-2 hover:underline'
+            >
+              이용약관
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
