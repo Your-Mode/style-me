@@ -27,7 +27,7 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
     const weight = Number.parseInt(formData.weight, 10);
 
     if (Number.isNaN(height) || Number.isNaN(weight) || height <= 0 || weight <= 0) {
-      setSubmitError('키와 몸무게는 0보다 큰 숫자로 입력해주세요.');
+      setSubmitError('키와 몸무게는 0보다 큰 숫자로 입력해 주세요.');
       return;
     }
 
@@ -61,4 +61,3 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
     handleSubmit,
   };
 }
-
