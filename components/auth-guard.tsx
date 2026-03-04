@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import type React from 'react';
 
@@ -17,6 +17,7 @@ import PageContainer from '@/components/common/page-container/page-container';
 import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
+import { PRIVACY_POLICY_PATH, TERMS_OF_SERVICE_PATH } from '@/lib/privacy-consent';
 
 const AUTH_SUCCESS_REDIRECT_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1500;
 
@@ -41,8 +42,8 @@ function AuthSuccessMessage() {
       <div className='inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-6'>
         <CheckCircle className='h-8 w-8 text-white' />
       </div>
-      <h3 className='text-xl font-bold text-green-600 mb-2'>?몄쬆 ?꾨즺!</h3>
-      <p className='text-gray-600'>?좎떆 ???섏씠吏濡??대룞?⑸땲??..</p>
+      <h3 className='text-xl font-bold text-green-600 mb-2'>인증 완료!</h3>
+      <p className='text-gray-600'>잠시 후 페이지로 이동합니다...</p>
     </div>
   );
 }
@@ -88,21 +89,21 @@ function AuthPhoneVerificationForm({
         {isPending ? (
           <div className='flex items-center'>
             <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
-            ?몄쬆 以?..
+            인증 중...
           </div>
         ) : (
-          '?몄쬆?섍린'
+          '인증하기'
         )}
       </Button>
 
       <div className='text-center'>
-        <p className='text-sm text-gray-500 mb-4'>?꾩쭅 寃곗젣瑜??꾨즺?섏? ?딆쑝?⑤굹??</p>
+        <p className='text-sm text-gray-500 mb-4'>아직 결제를 완료하지 않으셨나요?</p>
         <Link href='/apply'>
           <Button
             variant='outline'
             className='border-2 border-pink-400 text-pink-600 hover:bg-pink-50 bg-transparent'
           >
-            寃곗젣?섎윭 媛湲?
+            결제하러 가기
           </Button>
         </Link>
       </div>
@@ -188,8 +189,8 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
             navItems={[
               { label: '홈', href: '/' },
               { label: '신청하기', href: '/apply' },
-              { label: '개인정보처리방침', href: '/privacy' },
-              { label: '이용약관', href: '/terms' },
+              { label: '개인정보처리방침', href: PRIVACY_POLICY_PATH },
+              { label: '이용약관', href: TERMS_OF_SERVICE_PATH },
             ]}
           />
         )}
@@ -200,7 +201,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               <div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 shadow-lg'>
                 <Shield className='h-8 w-8 text-white' />
               </div>
-              <h1 className='text-3xl font-bold text-gray-800 mb-4'>?묎렐 ?몄쬆</h1>
+              <h1 className='text-3xl font-bold text-gray-800 mb-4'>결제 인증</h1>
               <p className='text-gray-600'>
                 {requiredPage === 'complete' ? '결제 완료' : '골격진단'} 페이지는 결제를 완료한
                 고객만 이용할 수 있습니다.
@@ -244,4 +245,3 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
 
   return <>{children}</>;
 }
-
