@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { BodyDiagnosisFormData } from '@/types/body';
 import { INITIAL_APPLICATION_FORM_DATA } from '@/app/apply/components/application-form/application-form.constants';
-import { isApplicationFormValid } from '@/app/apply/components/application-form/application-form.validation';
+import { validateApplicationForm } from '@/app/apply/components/application-form/application-form.validation';
 
 export function useApplicationFormState() {
   const [formData, setFormData] = useState<BodyDiagnosisFormData>(INITIAL_APPLICATION_FORM_DATA);
@@ -13,11 +13,12 @@ export function useApplicationFormState() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const isFormValid = useMemo(() => isApplicationFormValid(formData), [formData]);
+  const validationResult = useMemo(() => validateApplicationForm(formData), [formData]);
 
   return {
     formData,
-    isFormValid,
+    isFormValid: validationResult.isValid,
+    formErrors: validationResult.errors,
     updateField,
   };
 }
