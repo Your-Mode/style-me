@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Header from '@/app/survey/components/header/Header';
 import AuthGuard from '@/components/auth-guard';
 import Notice from '@/app/survey/_section/Notice';
@@ -6,6 +7,18 @@ import ProgressClient from '@/app/survey/components/progress-client/ProgressClie
 import ChatPanelClient from '@/app/survey/components/chat-panel-client/ChatPanelClient';
 import PageBackground from '@/components/common/page-background/page-background';
 import PageContainer from '@/components/common/page-container/page-container';
+
+export const metadata: Metadata = {
+  title: '스타일 설문',
+  description: '개인 맞춤 분석을 위한 설문을 진행하세요.',
+  alternates: {
+    canonical: '/survey',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function SurveyPage() {
   return (
