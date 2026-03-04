@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import type React from 'react';
 
@@ -41,8 +41,8 @@ function AuthSuccessMessage() {
       <div className='inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-6'>
         <CheckCircle className='h-8 w-8 text-white' />
       </div>
-      <h3 className='text-xl font-bold text-green-600 mb-2'>인증 완료!</h3>
-      <p className='text-gray-600'>잠시 후 페이지로 이동합니다...</p>
+      <h3 className='text-xl font-bold text-green-600 mb-2'>?몄쬆 ?꾨즺!</h3>
+      <p className='text-gray-600'>?좎떆 ???섏씠吏濡??대룞?⑸땲??..</p>
     </div>
   );
 }
@@ -59,7 +59,7 @@ function AuthPhoneVerificationForm({
     <div className='space-y-6'>
       <div>
         <Label htmlFor='phone' className='text-gray-700 font-medium'>
-          결제 시 입력한 전화번호를 입력해주세요
+          寃곗젣 ???낅젰???꾪솕踰덊샇瑜??낅젰?댁＜?몄슂
         </Label>
         <Input
           id='phone'
@@ -88,31 +88,31 @@ function AuthPhoneVerificationForm({
         {isPending ? (
           <div className='flex items-center'>
             <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
-            인증 중...
+            ?몄쬆 以?..
           </div>
         ) : (
-          '인증하기'
+          '?몄쬆?섍린'
         )}
       </Button>
 
       <div className='text-center'>
-        <p className='text-sm text-gray-500 mb-4'>아직 결제를 완료하지 않으셨나요?</p>
+        <p className='text-sm text-gray-500 mb-4'>?꾩쭅 寃곗젣瑜??꾨즺?섏? ?딆쑝?⑤굹??</p>
         <Link href='/apply'>
           <Button
             variant='outline'
             className='border-2 border-pink-400 text-pink-600 hover:bg-pink-50 bg-transparent'
           >
-            결제하러 가기
+            寃곗젣?섎윭 媛湲?
           </Button>
         </Link>
       </div>
 
       <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
-        <h4 className='font-semibold text-blue-800 mb-2'>💡 도움말</h4>
+        <h4 className='font-semibold text-blue-800 mb-2'>꼭 확인하세요</h4>
         <ul className='text-sm text-blue-700 space-y-1'>
-          <li>• 결제 시 입력한 전화번호와 정확히 일치해야 합니다</li>
-          <li>• 인증은 24시간 동안 유효합니다</li>
-          <li>• 문제가 있으시면 고객센터로 문의해주세요</li>
+          <li>결제 시 입력한 전화번호와 정확히 일치해야 합니다.</li>
+          <li>인증은 24시간 동안 유효합니다.</li>
+          <li>문제가 있으면 고객센터로 문의해 주세요.</li>
         </ul>
       </div>
     </div>
@@ -134,7 +134,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
     const normalizedPhoneNumber = phoneNumber.replace(/[^0-9]/g, '');
 
     if (!normalizedPhoneNumber) {
-      setError('전화번호를 입력해주세요.');
+      setError('?꾪솕踰덊샇瑜??낅젰?댁＜?몄슂.');
       return;
     }
 
@@ -142,7 +142,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
       const doesPaymentInfoExist = await verifyPhoneNumber(normalizedPhoneNumber);
 
       if (!doesPaymentInfoExist) {
-        setError('결제 정보를 찾을 수 없습니다. 먼저 결제를 완료해주세요.');
+        setError('寃곗젣 ?뺣낫瑜?李얠쓣 ???놁뒿?덈떎. 癒쇱? 寃곗젣瑜??꾨즺?댁＜?몄슂.');
         return;
       }
 
@@ -188,6 +188,8 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
             navItems={[
               { label: '홈', href: '/' },
               { label: '신청하기', href: '/apply' },
+              { label: '개인정보처리방침', href: '/privacy' },
+              { label: '이용약관', href: '/terms' },
             ]}
           />
         )}
@@ -198,10 +200,10 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               <div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 shadow-lg'>
                 <Shield className='h-8 w-8 text-white' />
               </div>
-              <h1 className='text-3xl font-bold text-gray-800 mb-4'>접근 인증</h1>
+              <h1 className='text-3xl font-bold text-gray-800 mb-4'>?묎렐 ?몄쬆</h1>
               <p className='text-gray-600'>
-                {requiredPage === 'complete' ? '결제 완료' : '골격진단'} 페이지는 결제를 완료한
-                고객만 이용할 수 있습니다.
+                {requiredPage === 'complete' ? '寃곗젣 ?꾨즺' : '怨④꺽吏꾨떒'} ?섏씠吏??寃곗젣瑜??꾨즺??
+                怨좉컼留??댁슜?????덉뒿?덈떎.
               </p>
             </div>
 
@@ -209,7 +211,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               <CardHeader className='bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg'>
                 <CardTitle className='flex items-center text-xl'>
                   <Phone className='h-5 w-5 mr-2' />
-                  전화번호 인증
+                  ?꾪솕踰덊샇 ?몄쬆
                 </CardTitle>
               </CardHeader>
               <CardContent className='p-8'>
@@ -229,10 +231,9 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
             </Card>
 
             <div className='mt-8 text-center'>
-              <p className='text-sm text-gray-500 mb-2'>문의사항이 있으시면 연락주세요</p>
-              <div className='flex justify-center space-x-4 text-sm text-gray-600'>
-                <span>📧 contact@styleme.co.kr</span>
-                <span>📞 1588-0000</span>
+              <p className='text-sm text-gray-500 mb-2'>문의사항이 있으면 연락해 주세요.</p>
+              <div className='flex justify-center text-sm text-gray-600'>
+                <span>✉ yourmode0604@gmail.com</span>
               </div>
             </div>
           </PageContainer>
@@ -243,3 +244,4 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
 
   return <>{children}</>;
 }
+
