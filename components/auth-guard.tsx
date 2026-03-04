@@ -59,7 +59,7 @@ function AuthPhoneVerificationForm({
     <div className='space-y-6'>
       <div>
         <Label htmlFor='phone' className='text-gray-700 font-medium'>
-          寃곗젣 ???낅젰???꾪솕踰덊샇瑜??낅젰?댁＜?몄슂
+          결제 시 입력한 전화번호를 입력해주세요
         </Label>
         <Input
           id='phone'
@@ -134,7 +134,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
     const normalizedPhoneNumber = phoneNumber.replace(/[^0-9]/g, '');
 
     if (!normalizedPhoneNumber) {
-      setError('?꾪솕踰덊샇瑜??낅젰?댁＜?몄슂.');
+      setError('전화번호를 입력해주세요.');
       return;
     }
 
@@ -142,7 +142,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
       const doesPaymentInfoExist = await verifyPhoneNumber(normalizedPhoneNumber);
 
       if (!doesPaymentInfoExist) {
-        setError('寃곗젣 ?뺣낫瑜?李얠쓣 ???놁뒿?덈떎. 癒쇱? 寃곗젣瑜??꾨즺?댁＜?몄슂.');
+        setError('결제 정보를 찾을 수 없습니다. 먼저 결제를 완료해주세요.');
         return;
       }
 
@@ -202,8 +202,8 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               </div>
               <h1 className='text-3xl font-bold text-gray-800 mb-4'>?묎렐 ?몄쬆</h1>
               <p className='text-gray-600'>
-                {requiredPage === 'complete' ? '寃곗젣 ?꾨즺' : '怨④꺽吏꾨떒'} ?섏씠吏??寃곗젣瑜??꾨즺??
-                怨좉컼留??댁슜?????덉뒿?덈떎.
+                {requiredPage === 'complete' ? '결제 완료' : '골격진단'} 페이지는 결제를 완료한
+                고객만 이용할 수 있습니다.
               </p>
             </div>
 
@@ -211,7 +211,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               <CardHeader className='bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-t-lg'>
                 <CardTitle className='flex items-center text-xl'>
                   <Phone className='h-5 w-5 mr-2' />
-                  ?꾪솕踰덊샇 ?몄쬆
+                  전화번호 인증
                 </CardTitle>
               </CardHeader>
               <CardContent className='p-8'>
