@@ -1,5 +1,6 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { Heart, Mail } from 'lucide-react';
+import { PRIVACY_POLICY_PATH, TERMS_OF_SERVICE_PATH } from '@/lib/privacy-consent';
 
 export default function Footer() {
   return (
@@ -61,13 +62,13 @@ export default function Footer() {
           <p>&copy; 2025 Style Me. All rights reserved.</p>
           <div className='flex items-center justify-center gap-4 text-sm'>
             <Link
-              href='/privacy'
+              href={PRIVACY_POLICY_PATH}
               className='hover:text-rose-400 transition-colors underline-offset-2 hover:underline'
             >
               개인정보처리방침
             </Link>
             <Link
-              href='/terms'
+              href={TERMS_OF_SERVICE_PATH}
               className='hover:text-rose-400 transition-colors underline-offset-2 hover:underline'
             >
               이용약관
