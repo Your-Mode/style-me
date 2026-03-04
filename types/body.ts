@@ -7,5 +7,7 @@ export interface BodyDiagnosisFormData {
   weight: string
   agreePrivacy: boolean
   agreeService: boolean
+  agreePhotoProcessing: boolean
+  agreeMarketing: boolean
   paymentMethod: string
 }
