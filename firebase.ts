@@ -1,4 +1,4 @@
-﻿import { initializeApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import {
   collection,
   doc,
@@ -40,33 +40,43 @@ if (typeof window !== 'undefined') {
 
 const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
+const generateOpaqueRequestId = () => {
+  const randomUuid = globalThis.crypto?.randomUUID?.();
+  if (randomUuid) return randomUuid;
+
+  const fallbackRandomToken = Math.random().toString(36).slice(2, 12);
+  return `req_${Date.now()}_${fallbackRandomToken}`;
+};
+
 export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
   if (IS_E2E_TEST_MODE) {
     return;
   }
 
   const phoneId = assertPhoneId(req.phone);
-  const requestId = `${phoneId}-${Date.now()}`;
+  const applyRef = doc(db, 'apply', phoneId);
+  const existingApply = await getDoc(applyRef);
+
+  if (existingApply.exists()) {
+    throw new Error('application already exists for this phone');
+  }
+
+  const requestId = generateOpaqueRequestId();
   const consentSnapshot = createConsentSnapshot(req, requestId);
   const batch = writeBatch(db);
-  const applyRef = doc(db, 'apply', phoneId);
   const consentLogRef = doc(collection(db, 'apply', phoneId, 'consent_logs'));
 
-  batch.set(
-    applyRef,
-    {
-      ...req,
-      phone: phoneId,
-      requestId,
-      consentSnapshot,
-      retentionPolicy: DATA_RETENTION_POLICY,
-      rightsRequestChannel: RIGHTS_REQUEST_CHANNEL,
-      thirdPartyNotice: THIRD_PARTY_NOTICE,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  );
+  batch.set(applyRef, {
+    ...req,
+    phone: phoneId,
+    requestId,
+    consentSnapshot,
+    retentionPolicy: DATA_RETENTION_POLICY,
+    rightsRequestChannel: RIGHTS_REQUEST_CHANNEL,
+    thirdPartyNotice: THIRD_PARTY_NOTICE,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
 
   batch.set(consentLogRef, {
     ...consentSnapshot,
