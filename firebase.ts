@@ -1,12 +1,12 @@
 ﻿import { initializeApp } from 'firebase/app';
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
   getFirestore,
   serverTimestamp,
   setDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import { BodyDiagnosisFormData } from '@/types/body';
@@ -45,12 +45,15 @@ export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
     return;
   }
 
-  const phoneId = normalizePhone(req.phone);
+  const phoneId = assertPhoneId(req.phone);
   const requestId = `${phoneId}-${Date.now()}`;
   const consentSnapshot = createConsentSnapshot(req, requestId);
+  const batch = writeBatch(db);
+  const applyRef = doc(db, 'apply', phoneId);
+  const consentLogRef = doc(collection(db, 'apply', phoneId, 'consent_logs'));
 
-  await setDoc(
-    doc(db, 'apply', phoneId),
+  batch.set(
+    applyRef,
     {
       ...req,
       phone: phoneId,
@@ -65,10 +68,12 @@ export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
     { merge: true },
   );
 
-  await addDoc(collection(db, 'apply', phoneId, 'consent_logs'), {
+  batch.set(consentLogRef, {
     ...consentSnapshot,
     createdAt: serverTimestamp(),
   });
+
+  await batch.commit();
 };
 
 const assertPhoneId = (raw: string) => {
@@ -121,7 +126,8 @@ export async function submitContactInquiry(req: ContactInquiryRequest): Promise<
     return 'test-contact-inquiry-id';
   }
 
-  const created = await addDoc(collection(db, 'contact_inquiries'), {
+  const created = doc(collection(db, 'contact_inquiries'));
+  await setDoc(created, {
     ...req,
     status: 'new',
     createdAt: serverTimestamp(),
@@ -141,7 +147,8 @@ export async function submitReview(req: ReviewRequest): Promise<string> {
     return 'test-review-id';
   }
 
-  const created = await addDoc(collection(db, 'reviews'), {
+  const created = doc(collection(db, 'reviews'));
+  await setDoc(created, {
     ...req,
     status: 'pending',
     createdAt: serverTimestamp(),
