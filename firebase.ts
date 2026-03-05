@@ -1,13 +1,23 @@
 import { initializeApp } from 'firebase/app';
-import { addDoc, collection, doc, getDoc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
-import { BodyDiagnosisFormData } from '@/types/body';
+import {
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  serverTimestamp,
+  setDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
+import { BodyDiagnosisFormData } from '@/types/body';
 import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {
+  createConsentSnapshot,
+  DATA_RETENTION_POLICY,
+  RIGHTS_REQUEST_CHANNEL,
+  THIRD_PARTY_NOTICE,
+} from '@/lib/privacy-consent';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -18,7 +28,6 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
@@ -31,18 +40,63 @@ if (typeof window !== 'undefined') {
 
 const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
+const BASE36_FRACTION_START_INDEX = 2;
+const FALLBACK_REQUEST_TOKEN_LENGTH = 10;
+
+const generateOpaqueRequestId = () => {
+  const randomUuid = globalThis.crypto?.randomUUID?.();
+  if (randomUuid) return randomUuid;
+
+  const fallbackRandomToken = Math.random()
+    .toString(36)
+    .slice(
+      BASE36_FRACTION_START_INDEX,
+      BASE36_FRACTION_START_INDEX + FALLBACK_REQUEST_TOKEN_LENGTH,
+    );
+  return `req_${Date.now()}_${fallbackRandomToken}`;
+};
+
 export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
   if (IS_E2E_TEST_MODE) {
     return;
   }
 
-  const phoneId = normalizePhone(req.phone);
-  const newReq = {
+  const phoneId = assertPhoneId(req.phone);
+  const applyRef = doc(db, 'apply', phoneId);
+  const requestId = generateOpaqueRequestId();
+  const consentSnapshot = createConsentSnapshot(req, requestId);
+  const consentLogRef = doc(collection(db, 'apply', phoneId, 'consent_logs'));
+  const applyIndexRef = doc(db, 'apply_index', phoneId);
+  const batch = writeBatch(db);
+  const existingApplyIndex = await getDoc(applyIndexRef);
+
+  if (existingApplyIndex.exists()) {
+    throw new Error('application already exists for this phone');
+  }
+
+  batch.set(applyRef, {
     ...req,
     phone: phoneId,
-    createdAt: new Date().toLocaleString().toString(),
-  };
-  await setDoc(doc(db, 'apply', phoneId), newReq); // 문서 ID = phone
+    requestId,
+    consentSnapshot,
+    retentionPolicy: DATA_RETENTION_POLICY,
+    rightsRequestChannel: RIGHTS_REQUEST_CHANNEL,
+    thirdPartyNotice: THIRD_PARTY_NOTICE,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+
+  batch.set(consentLogRef, {
+    ...consentSnapshot,
+    createdAt: serverTimestamp(),
+  });
+
+  batch.set(applyIndexRef, {
+    requestId,
+    createdAt: serverTimestamp(),
+  });
+
+  await batch.commit();
 };
 
 const assertPhoneId = (raw: string) => {
@@ -52,7 +106,6 @@ const assertPhoneId = (raw: string) => {
   return id;
 };
 
-// 설문 답변 저장
 export async function saveSurveyAnswers(phone: string, answers: string[]): Promise<string> {
   if (IS_E2E_TEST_MODE) {
     return normalizePhone(phone);
@@ -68,7 +121,7 @@ export async function saveSurveyAnswers(phone: string, answers: string[]): Promi
       completedAt: serverTimestamp(),
     },
     { merge: true },
-  ); // 필요시 덮어쓰기 허용
+  );
   return ref.id;
 }
 
@@ -78,7 +131,8 @@ export async function valueExists(collectionName: string, phone: string): Promis
   }
 
   const phoneId = assertPhoneId(phone);
-  const snap = await getDoc(doc(db, collectionName, phoneId));
+  const targetCollection = collectionName === 'apply' ? 'apply_index' : collectionName;
+  const snap = await getDoc(doc(db, targetCollection, phoneId));
   return snap.exists();
 }
 
@@ -96,7 +150,8 @@ export async function submitContactInquiry(req: ContactInquiryRequest): Promise<
     return 'test-contact-inquiry-id';
   }
 
-  const created = await addDoc(collection(db, 'contact_inquiries'), {
+  const created = doc(collection(db, 'contact_inquiries'));
+  await setDoc(created, {
     ...req,
     status: 'new',
     createdAt: serverTimestamp(),
@@ -116,7 +171,8 @@ export async function submitReview(req: ReviewRequest): Promise<string> {
     return 'test-review-id';
   }
 
-  const created = await addDoc(collection(db, 'reviews'), {
+  const created = doc(collection(db, 'reviews'));
+  await setDoc(created, {
     ...req,
     status: 'pending',
     createdAt: serverTimestamp(),

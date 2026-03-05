@@ -1,19 +1,171 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isValidPhoneId(phoneId) {
+      return phoneId.matches('^[0-9]{10,11}$');
+    }
+
+    function hasApplyPayloadShape(phoneId) {
+      return request.resource.data.keys().hasOnly([
+          'name',
+          'phone',
+          'email',
+          'gender',
+          'height',
+          'weight',
+          'agreePrivacy',
+          'agreeService',
+          'agreePhotoProcessing',
+          'agreeMarketing',
+          'paymentMethod',
+          'requestId',
+          'consentSnapshot',
+          'retentionPolicy',
+          'rightsRequestChannel',
+          'thirdPartyNotice',
+          'createdAt',
+          'updatedAt',
+        ])
+        && request.resource.data.phone == phoneId
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.gender is string
+        && request.resource.data.height is string
+        && request.resource.data.weight is string
+        && request.resource.data.paymentMethod is string
+        && request.resource.data.agreePrivacy == true
+        && request.resource.data.agreeService == true
+        && request.resource.data.agreePhotoProcessing is bool
+        && request.resource.data.agreeMarketing is bool
+        && request.resource.data.requestId is string
+        && request.resource.data.retentionPolicy is string
+        && request.resource.data.rightsRequestChannel is string
+        && request.resource.data.thirdPartyNotice is string
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    function hasConsentSnapshotShape() {
+      return request.resource.data.consentSnapshot.agreePrivacy == true
+        && request.resource.data.consentSnapshot.agreeService == true
+        && request.resource.data.consentSnapshot.agreePhotoProcessing is bool
+        && request.resource.data.consentSnapshot.agreeMarketing is bool
+        && request.resource.data.consentSnapshot.policyVersion is string
+        && request.resource.data.consentSnapshot.termsVersion is string
+        && request.resource.data.consentSnapshot.consentNoticeVersion is string
+        && request.resource.data.consentSnapshot.agreedAtISO is string
+        && request.resource.data.consentSnapshot.requestId is string
+        && request.resource.data.consentSnapshot.requestId == request.resource.data.requestId;
+    }
+
+    function hasConsentLogShape(phoneId) {
+      return request.resource.data.keys().hasOnly([
+          'agreePrivacy',
+          'agreeService',
+          'agreePhotoProcessing',
+          'agreeMarketing',
+          'policyVersion',
+          'termsVersion',
+          'consentNoticeVersion',
+          'agreedAtISO',
+          'requestId',
+          'createdAt',
+        ])
+        && request.resource.data.agreePrivacy == true
+        && request.resource.data.agreeService == true
+        && request.resource.data.agreePhotoProcessing is bool
+        && request.resource.data.agreeMarketing is bool
+        && request.resource.data.policyVersion is string
+        && request.resource.data.termsVersion is string
+        && request.resource.data.consentNoticeVersion is string
+        && request.resource.data.agreedAtISO is string
+        && request.resource.data.requestId is string
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.requestId ==
+          getAfter(/databases/$(database)/documents/apply/$(phoneId)).data.requestId;
+    }
+
+    match /apply/{phoneId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if isValidPhoneId(phoneId)
+        && !exists(/databases/$(database)/documents/apply/$(phoneId))
+        && hasApplyPayloadShape(phoneId)
+        && hasConsentSnapshotShape();
+      allow update, delete: if false;
+
+      match /consent_logs/{logId} {
+        allow create: if isValidPhoneId(phoneId)
+          && existsAfter(/databases/$(database)/documents/apply/$(phoneId))
+          && hasConsentLogShape(phoneId);
+        allow read, update, delete: if false;
+      }
+    }
+
+    match /apply_index/{phoneId} {
+      allow get: if isValidPhoneId(phoneId);
+      allow list: if false;
+      allow create: if isValidPhoneId(phoneId)
+        && !exists(/databases/$(database)/documents/apply_index/$(phoneId))
+        && request.resource.data.keys().hasOnly(['requestId', 'createdAt'])
+        && request.resource.data.requestId is string
+        && request.resource.data.createdAt is timestamp
+        && existsAfter(/databases/$(database)/documents/apply/$(phoneId))
+        && getAfter(/databases/$(database)/documents/apply/$(phoneId)).data.requestId ==
+          request.resource.data.requestId;
+      allow update, delete: if false;
+    }
+
+    match /surveys/{phoneId} {
+      allow create, update: if isValidPhoneId(phoneId)
+        && request.resource.data.keys().hasOnly(['phone', 'answers', 'completedAt'])
+        && request.resource.data.phone == phoneId
+        && request.resource.data.answers is list
+        && request.resource.data.completedAt is timestamp;
+      allow read, delete: if false;
+    }
+
+    match /contact_inquiries/{inquiryId} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'name',
+          'email',
+          'topic',
+          'message',
+          'source',
+          'status',
+          'createdAt',
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.topic is string
+        && request.resource.data.message is string
+        && request.resource.data.source in ['floating-button', 'footer']
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt is timestamp;
+      allow read, update, delete: if false;
+    }
+
+    match /reviews/{reviewId} {
+      allow create: if request.resource.data.keys().hasOnly([
+          'rating',
+          'comment',
+          'source',
+          'status',
+          'createdAt',
+        ])
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.source in ['result-page', 'pdf-download']
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt is timestamp;
+      allow read, update, delete: if false;
+    }
+
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 12, 30);
-      allow create: if true;
+      allow read, write: if false;
     }
   }
 }

@@ -18,7 +18,16 @@ const isPositiveNumberText = (value: string) => {
   return Number.isInteger(parsedValue) && parsedValue > 0;
 };
 
-export const isApplicationFormValid = (formData: BodyDiagnosisFormData) => {
+export type ApplicationFormValidation = {
+  isValid: boolean;
+  errors: {
+    requiredAgreement: string | null;
+  };
+};
+
+export const validateApplicationForm = (
+  formData: BodyDiagnosisFormData,
+): ApplicationFormValidation => {
   const hasAllRequiredTextValues = REQUIRED_TEXT_FIELDS.every((field) =>
     hasTextValue(formData[field]),
   );
@@ -26,5 +35,17 @@ export const isApplicationFormValid = (formData: BodyDiagnosisFormData) => {
   const hasValidHeight = isPositiveNumberText(formData.height);
   const hasValidWeight = isPositiveNumberText(formData.weight);
 
-  return hasAllRequiredTextValues && hasAllRequiredAgreements && hasValidHeight && hasValidWeight;
+  const requiredAgreement = hasAllRequiredAgreements
+    ? null
+    : '필수 동의 항목(개인정보 수집·이용, 서비스 이용약관)에 동의해 주세요.';
+
+  return {
+    isValid: hasAllRequiredTextValues && hasAllRequiredAgreements && hasValidHeight && hasValidWeight,
+    errors: {
+      requiredAgreement,
+    },
+  };
 };
+
+export const isApplicationFormValid = (formData: BodyDiagnosisFormData) =>
+  validateApplicationForm(formData).isValid;

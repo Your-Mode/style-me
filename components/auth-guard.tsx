@@ -17,6 +17,7 @@ import PageContainer from '@/components/common/page-container/page-container';
 import { setStorageJson, STORAGE_KEYS } from '@/lib/client-storage';
 import { captureAppError, USER_ERROR_MESSAGES } from '@/lib/error-policy';
 import { IS_E2E_TEST_MODE } from '@/lib/e2e-mode';
+import { PRIVACY_POLICY_PATH, TERMS_OF_SERVICE_PATH } from '@/lib/privacy-consent';
 
 const AUTH_SUCCESS_REDIRECT_DELAY_MS = IS_E2E_TEST_MODE ? 0 : 1500;
 
@@ -108,11 +109,11 @@ function AuthPhoneVerificationForm({
       </div>
 
       <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
-        <h4 className='font-semibold text-blue-800 mb-2'>💡 도움말</h4>
+        <h4 className='font-semibold text-blue-800 mb-2'>꼭 확인하세요</h4>
         <ul className='text-sm text-blue-700 space-y-1'>
-          <li>• 결제 시 입력한 전화번호와 정확히 일치해야 합니다</li>
-          <li>• 인증은 24시간 동안 유효합니다</li>
-          <li>• 문제가 있으시면 고객센터로 문의해주세요</li>
+          <li>결제 시 입력한 전화번호와 정확히 일치해야 합니다.</li>
+          <li>인증은 24시간 동안 유효합니다.</li>
+          <li>문제가 있으면 고객센터로 문의해 주세요.</li>
         </ul>
       </div>
     </div>
@@ -188,6 +189,8 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
             navItems={[
               { label: '홈', href: '/' },
               { label: '신청하기', href: '/apply' },
+              { label: '개인정보처리방침', href: PRIVACY_POLICY_PATH },
+              { label: '이용약관', href: TERMS_OF_SERVICE_PATH },
             ]}
           />
         )}
@@ -198,7 +201,7 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
               <div className='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-6 shadow-lg'>
                 <Shield className='h-8 w-8 text-white' />
               </div>
-              <h1 className='text-3xl font-bold text-gray-800 mb-4'>접근 인증</h1>
+              <h1 className='text-3xl font-bold text-gray-800 mb-4'>결제 인증</h1>
               <p className='text-gray-600'>
                 {requiredPage === 'complete' ? '결제 완료' : '골격진단'} 페이지는 결제를 완료한
                 고객만 이용할 수 있습니다.
@@ -229,10 +232,9 @@ export default function AuthGuard({ children, requiredPage, showHeader = true }:
             </Card>
 
             <div className='mt-8 text-center'>
-              <p className='text-sm text-gray-500 mb-2'>문의사항이 있으시면 연락주세요</p>
-              <div className='flex justify-center space-x-4 text-sm text-gray-600'>
-                <span>📧 contact@styleme.co.kr</span>
-                <span>📞 1588-0000</span>
+              <p className='text-sm text-gray-500 mb-2'>문의사항이 있으면 연락해 주세요.</p>
+              <div className='flex justify-center text-sm text-gray-600'>
+                <span>✉ yourmode0604@gmail.com</span>
               </div>
             </div>
           </PageContainer>
