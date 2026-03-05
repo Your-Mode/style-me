@@ -83,11 +83,11 @@ service cloud.firestore {
         && request.resource.data.requestId is string
         && request.resource.data.createdAt is timestamp
         && request.resource.data.requestId ==
-          get(/databases/$(database)/documents/apply/$(phoneId)).data.requestId;
+          getAfter(/databases/$(database)/documents/apply/$(phoneId)).data.requestId;
     }
 
     match /apply/{phoneId} {
-      allow get: if isValidPhoneId(phoneId);
+      allow get: if false;
       allow list: if false;
       allow create: if isValidPhoneId(phoneId)
         && !exists(/databases/$(database)/documents/apply/$(phoneId))
@@ -97,10 +97,24 @@ service cloud.firestore {
 
       match /consent_logs/{logId} {
         allow create: if isValidPhoneId(phoneId)
-          && exists(/databases/$(database)/documents/apply/$(phoneId))
+          && existsAfter(/databases/$(database)/documents/apply/$(phoneId))
           && hasConsentLogShape(phoneId);
         allow read, update, delete: if false;
       }
+    }
+
+    match /apply_index/{phoneId} {
+      allow get: if isValidPhoneId(phoneId);
+      allow list: if false;
+      allow create: if isValidPhoneId(phoneId)
+        && !exists(/databases/$(database)/documents/apply_index/$(phoneId))
+        && request.resource.data.keys().hasOnly(['requestId', 'createdAt'])
+        && request.resource.data.requestId is string
+        && request.resource.data.createdAt is timestamp
+        && existsAfter(/databases/$(database)/documents/apply/$(phoneId))
+        && getAfter(/databases/$(database)/documents/apply/$(phoneId)).data.requestId ==
+          request.resource.data.requestId;
+      allow update, delete: if false;
     }
 
     match /surveys/{phoneId} {
