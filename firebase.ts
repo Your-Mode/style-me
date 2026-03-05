@@ -40,11 +40,19 @@ if (typeof window !== 'undefined') {
 
 const normalizePhone = (raw: string) => raw.replace(/\D/g, '');
 
+const BASE36_FRACTION_START_INDEX = 2;
+const FALLBACK_REQUEST_TOKEN_LENGTH = 10;
+
 const generateOpaqueRequestId = () => {
   const randomUuid = globalThis.crypto?.randomUUID?.();
   if (randomUuid) return randomUuid;
 
-  const fallbackRandomToken = Math.random().toString(36).slice(2, 12);
+  const fallbackRandomToken = Math.random()
+    .toString(36)
+    .slice(
+      BASE36_FRACTION_START_INDEX,
+      BASE36_FRACTION_START_INDEX + FALLBACK_REQUEST_TOKEN_LENGTH,
+    );
   return `req_${Date.now()}_${fallbackRandomToken}`;
 };
 
@@ -55,16 +63,16 @@ export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
 
   const phoneId = assertPhoneId(req.phone);
   const applyRef = doc(db, 'apply', phoneId);
-  const existingApply = await getDoc(applyRef);
-
-  if (existingApply.exists()) {
-    throw new Error('application already exists for this phone');
-  }
-
   const requestId = generateOpaqueRequestId();
   const consentSnapshot = createConsentSnapshot(req, requestId);
-  const batch = writeBatch(db);
   const consentLogRef = doc(collection(db, 'apply', phoneId, 'consent_logs'));
+  const applyIndexRef = doc(db, 'apply_index', phoneId);
+  const batch = writeBatch(db);
+  const existingApplyIndex = await getDoc(applyIndexRef);
+
+  if (existingApplyIndex.exists()) {
+    throw new Error('application already exists for this phone');
+  }
 
   batch.set(applyRef, {
     ...req,
@@ -80,6 +88,11 @@ export const applyBodyDiagnosis = async (req: BodyDiagnosisFormData) => {
 
   batch.set(consentLogRef, {
     ...consentSnapshot,
+    createdAt: serverTimestamp(),
+  });
+
+  batch.set(applyIndexRef, {
+    requestId,
     createdAt: serverTimestamp(),
   });
 
@@ -118,7 +131,8 @@ export async function valueExists(collectionName: string, phone: string): Promis
   }
 
   const phoneId = assertPhoneId(phone);
-  const snap = await getDoc(doc(db, collectionName, phoneId));
+  const targetCollection = collectionName === 'apply' ? 'apply_index' : collectionName;
+  const snap = await getDoc(doc(db, targetCollection, phoneId));
   return snap.exists();
 }
 
