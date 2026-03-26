@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 import type React from 'react';
 
@@ -23,7 +23,7 @@ export default function ServiceInfo() {
             <ul className='space-y-2 text-sm text-gray-600'>
               <li className='flex items-center'>
                 <Check className='h-4 w-4 text-green-500 mr-2' />
-                AI 기반 17문항 골격 진단
+                AI 기반 15문항 골격 진단
               </li>
               <li className='flex items-center'>
                 <Check className='h-4 w-4 text-green-500 mr-2' />
@@ -64,3 +64,4 @@ export default function ServiceInfo() {
     </div>
   );
 }
+

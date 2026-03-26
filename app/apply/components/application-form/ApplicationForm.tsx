@@ -1,20 +1,27 @@
-'use client';
+﻿'use client';
 
+import Link from 'next/link';
+import Image from 'next/image';
+import { Camera, CreditCard, Smartphone, Upload, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Camera, CreditCard, Smartphone, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormField } from '@/components/ui/form-field';
 import { useApplicationFormState } from '@/app/apply/components/application-form/useApplicationFormState';
 import { useImagePreviewUpload } from '@/app/apply/components/application-form/useImagePreviewUpload';
 import { useApplicationSubmit } from '@/app/apply/components/application-form/useApplicationSubmit';
+import {
+  POLICY_LINKS,
+  POLICY_VERSIONS,
+  PRIVACY_OPERATION_NOTICE,
+  REQUIRED_AGREEMENT_GUIDE_TEXT,
+} from '@/app/apply/components/application-form/application-form.constants';
 
 export default function ApplicationForm() {
-  const { formData, isFormValid, updateField } = useApplicationFormState();
+  const { formData, isFormValid, formErrors, updateField } = useApplicationFormState();
   const {
     fileInputRef,
     previewUrls,
@@ -28,6 +35,8 @@ export default function ApplicationForm() {
     isFormValid,
   });
 
+  const shouldShowRequiredAgreementError = !formData.agreePrivacy || !formData.agreeService;
+
   return (
     <div className='lg:col-span-2'>
       <Card className='border-0 shadow-lg'>
@@ -35,14 +44,13 @@ export default function ApplicationForm() {
           <CardTitle className='text-2xl text-gray-800'>신청 정보 입력</CardTitle>
         </CardHeader>
         <CardContent className='space-y-6'>
-          {/* Personal Information */}
           <div className='grid md:grid-cols-2 gap-4'>
             <FormField.Root>
               <Label htmlFor='name'>이름 *</Label>
               <Input
                 id='name'
                 value={formData.name}
-                onChange={(e) => updateField('name', e.target.value)}
+                onChange={(event) => updateField('name', event.target.value)}
                 placeholder='홍길동'
                 className='mt-1'
               />
@@ -52,7 +60,7 @@ export default function ApplicationForm() {
               <Input
                 id='phone'
                 value={formData.phone}
-                onChange={(e) => updateField('phone', e.target.value)}
+                onChange={(event) => updateField('phone', event.target.value)}
                 placeholder='010-1234-5678'
                 className='mt-1'
               />
@@ -65,7 +73,7 @@ export default function ApplicationForm() {
               id='email'
               type='email'
               value={formData.email}
-              onChange={(e) => updateField('email', e.target.value)}
+              onChange={(event) => updateField('email', event.target.value)}
               placeholder='example@email.com'
               className='mt-1'
             />
@@ -91,33 +99,32 @@ export default function ApplicationForm() {
 
           <div className='grid md:grid-cols-2 gap-4'>
             <FormField.Root>
-              <Label htmlFor='height'>키 (cm) *</Label>
+              <Label htmlFor='height'>키(cm) *</Label>
               <Input
                 id='height'
                 value={formData.height}
-                onChange={(e) => updateField('height', e.target.value)}
+                onChange={(event) => updateField('height', event.target.value)}
                 placeholder='165'
                 className='mt-1'
               />
             </FormField.Root>
             <FormField.Root>
-              <Label htmlFor='weight'>몸무게 (kg) *</Label>
+              <Label htmlFor='weight'>몸무게(kg) *</Label>
               <Input
                 id='weight'
                 value={formData.weight}
-                onChange={(e) => updateField('weight', e.target.value)}
+                onChange={(event) => updateField('weight', event.target.value)}
                 placeholder='55'
                 className='mt-1'
               />
             </FormField.Root>
           </div>
 
-          {/* Photo Upload Section */}
           <FormField.Root className='space-y-4'>
             <FormField.Header>
-              <Label>체형 사진 업로드 (선택사항)</Label>
+              <Label>체형 사진 업로드 (선택)</Label>
               <FormField.Description>
-                더 정확한 진단을 위해 전신 사진을 업로드해주세요. (최대 3장)
+                더 정확한 진단을 위해 전신 사진을 업로드할 수 있습니다. (최대 3장)
               </FormField.Description>
             </FormField.Header>
 
@@ -131,7 +138,7 @@ export default function ApplicationForm() {
                 className='hidden'
               />
               <Camera className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-              <p className='text-gray-600 mb-2'>사진을 드래그하거나 클릭하여 업로드</p>
+              <p className='text-gray-600 mb-2'>사진을 드래그하거나 클릭해 업로드하세요.</p>
               <Button
                 type='button'
                 variant='outline'
@@ -144,16 +151,15 @@ export default function ApplicationForm() {
               <p className='text-xs text-gray-500 mt-2'>JPG, PNG 파일만 가능 (최대 5MB)</p>
             </div>
 
-            {uploadError && <p className='text-sm text-red-600'>{uploadError}</p>}
+            {uploadError ? <p className='text-sm text-red-600'>{uploadError}</p> : null}
 
-            {/* Uploaded Images Preview */}
-            {previewUrls.length > 0 && (
+            {previewUrls.length > 0 ? (
               <div className='grid grid-cols-3 gap-4'>
                 {previewUrls.map((previewUrl, index) => (
-                  <div key={index} className='relative'>
+                  <div key={previewUrl} className='relative'>
                     <Image
                       src={previewUrl}
-                      alt={`업로드된 이미지 ${index + 1}`}
+                      alt={`업로드한 이미지 ${index + 1}`}
                       className='w-full h-32 object-cover rounded-lg'
                       width={128}
                       height={128}
@@ -170,42 +176,95 @@ export default function ApplicationForm() {
                   </div>
                 ))}
               </div>
-            )}
+            ) : null}
           </FormField.Root>
 
-          {/* Privacy Agreement */}
           <div className='space-y-4 p-4 bg-gray-50 rounded-lg'>
-            <h4 className='font-semibold text-gray-800'>개인정보 수집 및 이용 동의</h4>
+            <h4 className='font-semibold text-gray-800'>개인정보 및 약관 동의</h4>
             <div className='space-y-3'>
-              <FormField.CheckItem>
+              <FormField.CheckItem className='items-start gap-2'>
                 <Checkbox
                   id='agreePrivacy'
+                  className='shrink-0 mt-0.5'
                   checked={formData.agreePrivacy}
                   onCheckedChange={(checked) => updateField('agreePrivacy', checked === true)}
                 />
-                <Label htmlFor='agreePrivacy' className='text-sm leading-relaxed'>
+                <Label htmlFor='agreePrivacy' className='text-sm leading-relaxed min-w-0 whitespace-normal break-keep'>
                   개인정보 수집 및 이용에 동의합니다. (필수)
-                  <br />
-                  <span className='text-gray-500'>
-                    수집항목: 이름, 연락처, 이메일, 신체정보, 사진(선택) / 이용목적: 골격진단 서비스
-                    제공 / 보관기간: 서비스 완료 후 1년
+                  <span className='block text-gray-500 mt-1'>
+                    수집 항목: 이름, 연락처, 이메일, 성별, 키/몸무게
+                    <br />
+                    이용 목적: 골격 진단 서비스 제공 및 결과 안내
+                    <br />
+                    보관 기간: {PRIVACY_OPERATION_NOTICE.retention}
                   </span>
                 </Label>
               </FormField.CheckItem>
-              <FormField.CheckItem>
+
+              <FormField.CheckItem className='items-start gap-2'>
                 <Checkbox
                   id='agreeService'
+                  className='shrink-0 mt-0.5'
                   checked={formData.agreeService}
                   onCheckedChange={(checked) => updateField('agreeService', checked === true)}
                 />
-                <Label htmlFor='agreeService' className='text-sm'>
+                <Label htmlFor='agreeService' className='text-sm min-w-0 whitespace-normal break-keep'>
                   서비스 이용약관에 동의합니다. (필수)
                 </Label>
               </FormField.CheckItem>
+
+              <FormField.CheckItem className='items-start gap-2'>
+                <Checkbox
+                  id='agreePhotoProcessing'
+                  className='shrink-0 mt-0.5'
+                  checked={formData.agreePhotoProcessing}
+                  onCheckedChange={(checked) => updateField('agreePhotoProcessing', checked === true)}
+                />
+                <Label htmlFor='agreePhotoProcessing' className='text-sm min-w-0 whitespace-normal break-keep'>
+                  선택 업로드 사진 처리에 동의합니다. (선택)
+                </Label>
+              </FormField.CheckItem>
+
+              <FormField.CheckItem className='items-start gap-2'>
+                <Checkbox
+                  id='agreeMarketing'
+                  className='shrink-0 mt-0.5'
+                  checked={formData.agreeMarketing}
+                  onCheckedChange={(checked) => updateField('agreeMarketing', checked === true)}
+                />
+                <Label htmlFor='agreeMarketing' className='text-sm min-w-0 whitespace-normal break-keep'>
+                  이벤트/혜택 안내 수신에 동의합니다. (선택)
+                </Label>
+              </FormField.CheckItem>
             </div>
+
+            <div className='text-xs text-gray-600 leading-relaxed space-y-1 break-keep'>
+              <p>
+                필수 문서:
+                {' '}
+                <Link href={POLICY_LINKS.privacy} className='underline underline-offset-2'>
+                  개인정보처리방침
+                </Link>
+                {' '}
+                (v{POLICY_VERSIONS.privacy}),
+                {' '}
+                <Link href={POLICY_LINKS.terms} className='underline underline-offset-2'>
+                  이용약관
+                </Link>
+                {' '}
+                (v{POLICY_VERSIONS.terms})
+              </p>
+              <p>{PRIVACY_OPERATION_NOTICE.thirdParty}</p>
+              <p>권리행사(열람/정정/삭제) 요청: {PRIVACY_OPERATION_NOTICE.rights}</p>
+            </div>
+
+            {shouldShowRequiredAgreementError ? (
+              <p className='text-sm text-red-600'>
+                {formErrors.requiredAgreement ?? REQUIRED_AGREEMENT_GUIDE_TEXT}
+              </p>
+            ) : null}
           </div>
 
-          {/* Payment Method */}
           <div>
             <Label>결제 수단 선택 *</Label>
             <RadioGroup
@@ -231,7 +290,6 @@ export default function ApplicationForm() {
             </RadioGroup>
           </div>
 
-          {/* Submit Button */}
           <div className='pt-6'>
             <Button
               onClick={handleSubmit}
@@ -244,12 +302,12 @@ export default function ApplicationForm() {
                   신청 진행 중...
                 </div>
               ) : (
-                `무료로 진단 시작하기 🎉`
+                '무료로 진단 시작하기 🚀'
               )}
             </Button>
-            {submitError && <p className='text-sm text-red-600 text-center mt-2'>{submitError}</p>}
+            {submitError ? <p className='text-sm text-red-600 text-center mt-2'>{submitError}</p> : null}
             <p className='text-sm text-gray-500 text-center mt-2'>
-              런칭 기념 무료 이벤트! 신청 완료 후 즉시 골격진단을 시작할 수 있습니다.
+              이벤트 기간 무료 신청 완료 후 즉시 골격진단이 시작됩니다.
             </p>
           </div>
         </CardContent>

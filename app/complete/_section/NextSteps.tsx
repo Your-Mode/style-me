@@ -21,7 +21,7 @@ export default function NextSteps() {
             <div>
               <h4 className='font-semibold text-gray-800 mb-2'>골격진단 설문 진행</h4>
               <p className='text-gray-600 mb-3'>
-                17개의 질문에 답변하여 정확한 골격 타입을 분석받으세요. 약 10-15분 소요됩니다.
+                15개의 질문에 답변하여 정확한 골격 타입을 분석받으세요. 약 10-15분 소요됩니다.
               </p>
               <Link href='/survey'>
                 <Button className='bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white'>

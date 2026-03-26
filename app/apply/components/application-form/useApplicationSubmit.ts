@@ -14,6 +14,18 @@ type UseApplicationSubmitParams = {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const isAlreadyAppliedError = (error: unknown) => {
+  if (error instanceof Error && error.message === 'application already exists for this phone') {
+    return true;
+  }
+
+  if (typeof error !== 'object' || error === null || !('code' in error)) {
+    return false;
+  }
+
+  return (error as { code?: string }).code === 'permission-denied';
+};
+
 export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSubmitParams) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -27,7 +39,7 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
     const weight = Number.parseInt(formData.weight, 10);
 
     if (Number.isNaN(height) || Number.isNaN(weight) || height <= 0 || weight <= 0) {
-      setSubmitError('키와 몸무게는 0보다 큰 숫자로 입력해주세요.');
+      setSubmitError('키와 몸무게는 0보다 큰 숫자로 입력해 주세요.');
       return;
     }
 
@@ -49,6 +61,11 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
         feature: 'apply',
         action: 'submit-application',
       });
+      if (isAlreadyAppliedError(error)) {
+        setSubmitError(USER_ERROR_MESSAGES.APPLICATION_ALREADY_EXISTS);
+        return;
+      }
+
       setSubmitError(USER_ERROR_MESSAGES.GENERIC_RETRY);
     } finally {
       setIsSubmitting(false);
@@ -61,4 +78,3 @@ export function useApplicationSubmit({ formData, isFormValid }: UseApplicationSu
     handleSubmit,
   };
 }
-
